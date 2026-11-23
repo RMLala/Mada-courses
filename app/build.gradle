@@ -1,0 +1,58 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.rmlala.madacourses'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.rmlala.madacourses'
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName '1.4.0'
+    }
+
+    flavorDimensions 'api'
+    productFlavors {
+        api23 {
+            dimension 'api'
+            minSdk 23
+            targetSdk 23
+            applicationIdSuffix '.api23'
+            versionNameSuffix '-api23'
+        }
+        api29 {
+            dimension 'api'
+            minSdk 29
+            targetSdk 29
+            applicationIdSuffix '.api29'
+            versionNameSuffix '-api29'
+        }
+    }
+
+    // Les identifiants de signature viennent des secrets GitHub, jamais du dépôt.
+    signingConfigs {
+        release {
+            if (System.getenv('KEYSTORE_PATH')) {
+                storeFile file(System.getenv('KEYSTORE_PATH'))
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
