@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - android-build
+  pull_request:
+    branches:
+      - android-build
   workflow_dispatch:
 
 permissions:
