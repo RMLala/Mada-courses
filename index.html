@@ -14,7 +14,7 @@ header h1{margin:0;font-size:18px;color:var(--accent)}
 header small{color:var(--muted)}
 main{padding:14px;max-width:820px;margin:0 auto}
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
-nav{overflow-x:auto}nav button{flex:0 0 auto;min-width:64px;border:0;background:none;color:var(--muted);padding:8px 4px;font-size:11px;cursor:pointer}
+nav{overflow-x:auto}nav button{flex:1 1 0;min-width:0;border:0;background:none;color:var(--muted);padding:8px 4px;font-size:11px;cursor:pointer}
 nav button.on{color:var(--accent);font-weight:600}
 nav button span{display:block;font-size:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
@@ -58,10 +58,23 @@ button:active{transform:scale(.97)}
 input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
 h2{letter-spacing:-.01em}
 main{padding:16px 14px 24px}
+.app-header{display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:64px}
+.app-header .menu-trigger,.app-header .header-settings{width:42px;height:42px;border:0;border-radius:13px;background:var(--soft);color:var(--accent);font-size:21px;display:grid;place-items:center;padding:0;flex:0 0 auto}
+.brand-mark{width:40px;height:40px;border-radius:13px;background:linear-gradient(145deg,#16865a,#0d6045);display:grid;place-items:center;color:#fff;font-size:22px;box-shadow:0 5px 14px rgba(22,134,90,.22)}
+.brand-copy{flex:1;min-width:0}.brand-copy h1{font-size:16px;letter-spacing:.04em}.brand-copy small{font-size:11px}
+.menu-shade{position:fixed;inset:0;background:rgba(10,20,15,.42);z-index:19;opacity:0;visibility:hidden;transition:.2s}
+.side-menu{position:fixed;z-index:20;top:0;bottom:0;left:0;width:min(82vw,320px);padding:calc(22px + env(safe-area-inset-top)) 14px 22px;background:var(--card);box-shadow:18px 0 50px rgba(0,0,0,.18);transform:translateX(-105%);transition:transform .22s ease;overflow-y:auto}
+body.menu-open .side-menu{transform:translateX(0)}body.menu-open .menu-shade{opacity:1;visibility:visible}
+.menu-head{padding:12px 12px 20px;margin-bottom:8px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px}.menu-head b{color:var(--accent);letter-spacing:.04em}.menu-head small{color:var(--muted)}
+.side-link{display:flex;align-items:center;gap:12px;width:100%;border:0;text-align:left;background:transparent;padding:12px;border-radius:12px;color:var(--text);font-size:14px;margin:2px 0}
+.side-link.active{background:var(--soft);color:var(--accent);font-weight:700}.side-link .side-icon{width:24px;text-align:center;font-size:18px}
+nav button{min-height:54px}
+@media(min-width:700px){.side-menu{width:300px}main{padding-left:22px;padding-right:22px}}
 </style>
 </head>
 <body>
-<header><h1>🛒 MADA COURSES PRO</h1><small>Courses, budget et rapports du foyer · fonctionne hors ligne</small> <button class='sm' data-act='tab' data-v='reglages' style='float:right'>⚙ Réglages</button></header>
+<header class="app-header"><button class="menu-trigger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-act="menuToggle">☰</button><div class="brand-mark" aria-hidden="true">🛒</div><div class="brand-copy"><h1>MADA COURSES</h1><small>Gestion du foyer · Premium</small></div><button class="header-settings" type="button" aria-label="Réglages" data-act="tab" data-v="reglages">⚙</button></header>
+<div id="menuShade" class="menu-shade" data-act="menuClose"></div><aside id="sideMenu" class="side-menu" aria-label="Navigation principale"><div class="menu-head"><b>MADA COURSES PRO</b><small>Votre gestion au quotidien</small></div><div id="sideLinks"></div></aside>
 <main id="app"></main>
 <nav id="nav"></nav>
 <div id="toast" class="toast"></div>
@@ -334,7 +347,9 @@ function rateOf(s){const h=(s.hist||[]).slice().sort((a,b)=>a[0].localeCompare(b
 /* ---------- actions ---------- */
 function act(a,d){
   switch(a){
-    case 'tab': ui.tab=d.v; ui.courseId=null; ui.modelId=null; break;
+    case 'tab': ui.tab=d.v; ui.courseId=null; ui.modelId=null; document.body.classList.remove('menu-open'); break;
+    case 'menuToggle': document.body.classList.toggle('menu-open'); break;
+    case 'menuClose': document.body.classList.remove('menu-open'); break;
     case 'newCourse': openC(makeCourse(iso(),'matin',[])); break;
     case 'quick': {
       const p=d.period;
@@ -416,6 +431,7 @@ function setField(el){
 }
 function render(){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.tab));
+  document.querySelectorAll('.side-link').forEach(b=>b.classList.toggle('active',b.dataset.v===ui.tab));
   const V={accueil:vAccueil,courses:vCourses,modeles:vModeles,historique:vHistorique,budget:vBudget,stocks:vStocks,catalogue:vCatalogue,rapports:vRapports,reglages:vReglages};
   $('#app').innerHTML=bannerBackup()+V[ui.tab]();
 }
@@ -431,10 +447,43 @@ document.addEventListener('change',e=>{
   if(e.target.dataset&&e.target.dataset.set)setField(e.target);
 });
 
-document.addEventListener('change',e=>{if(e.target.id!=='imp'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o||!Array.isArray(o.courses)||!Array.isArray(o.models)||!o.courses.every(c=>Array.isArray(c.items)))throw new Error('format');o.stocks=o.stocks||[];o.shops=o.shops||[];o.cats=o.cats||CATS.slice();o.remises=o.remises||[];o.settings=o.settings||{budgetMensuel:0};db=o;ui.courseId=null;ui.modelId=null;save();render();toast('Restauration r\u00e9ussie')}catch(err){toast('Fichier invalide : restauration annul\u00e9e')}};r.readAsText(e.target.files[0])});
+document.addEventListener('change',e=>{
+  if(e.target.id!=='imp'||!e.target.files||!e.target.files[0])return;
+  const file=e.target.files[0];
+  if(file.size>10*1024*1024){toast('Sauvegarde trop volumineuse (maximum 10 Mo)');e.target.value='';return}
+  if(!confirm('Restaurer cette sauvegarde ? Les données actuelles seront remplacées. Téléchargez une sauvegarde de sécurité avant de continuer.')){e.target.value='';return}
+  const reader=new FileReader();
+  reader.onerror=()=>toast('Lecture du fichier impossible');
+  reader.onload=()=>{
+    try{
+      const imported=JSON.parse(String(reader.result||''));
+      const isObj=v=>v&&typeof v==='object'&&!Array.isArray(v);
+      const arrays=['courses','models','stocks','shops','remises'];
+      if(!isObj(imported)||!Array.isArray(imported.courses)||!Array.isArray(imported.models))throw new Error('Structure de sauvegarde invalide');
+      for(const key of arrays)if(imported[key]!==undefined&&!Array.isArray(imported[key]))throw new Error('Rubrique invalide : '+key);
+      if(!imported.courses.every(c=>isObj(c)&&Array.isArray(c.items))||!imported.models.every(m=>isObj(m)&&Array.isArray(m.items)))throw new Error('Contenu des courses ou modèles invalide');
+      const defaults=seed();
+      const restored={...defaults,...imported};
+      restored.settings={...defaults.settings,...(isObj(imported.settings)?imported.settings:{})};
+      restored.stocks=Array.isArray(imported.stocks)?imported.stocks:[];
+      restored.shops=Array.isArray(imported.shops)?imported.shops:[];
+      restored.remises=Array.isArray(imported.remises)?imported.remises:[];
+      restored.cats=Array.isArray(imported.cats)?imported.cats:CATS.slice();
+      restored.products=Array.isArray(imported.products)?imported.products:[];
+      const before=localStorage.getItem(KEY);
+      try{localStorage.setItem(KEY,JSON.stringify(restored));db=restored;localStorage.setItem(LS,'0');save();}
+      catch(storageError){if(before===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,before);throw new Error('Espace de stockage insuffisant : données précédentes conservées');}
+      ui.courseId=null;ui.modelId=null;ui.updFor=null;ui.tab='accueil';render();toast('Restauration terminée : données importées et enregistrées');
+    }catch(err){toast(err.message||'Fichier invalide : restauration annulée')}
+    finally{e.target.value=''}
+  };
+  reader.readAsText(file);
+});
 document.addEventListener('change',e=>{if(e.target.id!=='n_prod')return;const pr=(db.products||[]).find(x=>x.id===e.target.value);if(!pr)return;$('#n_name').value=pr.name;$('#n_unit').value=pr.unit;$('#n_cat').value=pr.cat;$('#n_est').value=pr.ref||''});
 /* ---------- démarrage ---------- */
-$('#nav').innerHTML=TABS.map(([k,ic,l])=>`<button data-act="tab" data-v="${k}"><span>${ic}</span>${l}</button>`).join('');
+const PRIMARY=TABS.filter(x=>['accueil','courses','budget'].includes(x[0]));
+$('#nav').innerHTML=PRIMARY.map(([k,ic,l])=>`<button data-act="tab" data-v="${k}"><span>${ic}</span>${l}</button>`).join('');
+$('#sideLinks').innerHTML=TABS.concat([['reglages','⚙','Réglages']]).map(([k,ic,l])=>`<button class="side-link" data-act="tab" data-v="${k}"><span class="side-icon">${ic}</span><span>${l}</span></button>`).join('');
 $('#units').innerHTML=UNITS.map(u=>`<option value="${u}">`).join('');
 save();
 render();
