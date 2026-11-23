@@ -1,0 +1,63 @@
+name: Cloudflare access audit
+
+on:
+  push:
+    branches:
+      - premium-finalisation-20261123
+  pull_request:
+    branches:
+      - android-build
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      WORKER_URL: https://appforge-license-api.lalainaadclick.workers.dev
+    steps:
+      - name: Vérifier la présence des secrets (sans les afficher)
+        shell: bash
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::Secret CLOUDFLARE_API_TOKEN absent ou inaccessible"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::Secret CLOUDFLARE_ACCOUNT_ID absent ou inaccessible"; exit 1; }
+          echo "Secrets disponibles pour ce workflow."
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Vérifier l'accès au compte Cloudflare
+        run: npx --yes wrangler@4 whoami
+
+      - name: Vérifier le bucket R2
+        shell: bash
+        run: |
+          npx --yes wrangler@4 r2 bucket list | tee /tmp/r2-buckets.txt
+          grep -Fq "appforge-cloud-files" /tmp/r2-buckets.txt || { echo "::error::Bucket appforge-cloud-files introuvable dans ce compte"; exit 1; }
+
+      - name: Vérifier la base D1
+        shell: bash
+        run: |
+          npx --yes wrangler@4 d1 list | tee /tmp/d1-databases.txt
+          grep -Fq "appforge-licenses" /tmp/d1-databases.txt || { echo "::error::Base appforge-licenses introuvable dans ce compte"; exit 1; }
+
+      - name: Vérifier le Worker en production
+        shell: bash
+        run: |
+          curl --fail --silent --show-error "$WORKER_URL/health" | tee /tmp/health.json
+          jq -e '.ok == true' /tmp/health.json >/dev/null
+          curl --fail --silent --show-error "$WORKER_URL/v1/config" | jq -e '.protocol == "appforge-license-v1"' >/dev/null
+
+      - name: Vérifier le refus d'accès R2 sans jeton
+        shell: bash
+        run: |
+          code=$(curl --silent --output /tmp/unauthorized.json --write-out '%{http_code}' "$WORKER_URL/v1/cloud/files")
+          test "$code" = "401" || { echo "::error::Accès R2 sans jeton : HTTP $code (attendu 401)"; cat /tmp/unauthorized.json; exit 1; }
+          echo "Accès anonyme refusé : HTTP 401."
