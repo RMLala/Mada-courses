@@ -1,0 +1,97 @@
+name: Android build
+
+# Déclenchement manuel uniquement : Actions → Android build → Run workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Dépôt
+        uses: actions/checkout@v4
+
+      - name: Vérifier index.html
+        run: |
+          test -f index.html || { echo "::error::index.html absent de la racine du dépôt"; exit 1; }
+
+      - name: Copier l'application dans les assets Android
+        run: |
+          mkdir -p app/src/main/assets
+          cp index.html app/src/main/assets/index.html
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Plateforme et build-tools
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Décoder le keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then echo "::error::Secret KEYSTORE_BASE64 absent"; exit 1; fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+
+      - name: Compiler les 4 APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: gradle --no-daemon assembleApi23Debug assembleApi29Debug assembleApi23Release assembleApi29Release
+
+      - name: Vérifier signatures et niveaux d'API
+        run: |
+          BT="$ANDROID_HOME/build-tools/34.0.0"
+          DBG=$(find app/build/outputs/apk -path '*debug*' -name '*.apk')
+          REL=$(find app/build/outputs/apk -path '*release*' -name '*.apk')
+          [ "$(echo "$DBG" | grep -c apk)" -eq 2 ] || { echo "::error::APK debug manquants"; exit 1; }
+          [ "$(echo "$REL" | grep -c apk)" -eq 2 ] || { echo "::error::APK release manquants"; exit 1; }
+          for apk in $REL; do
+            "$BT/apksigner" verify "$apk" || { echo "::error::Signature invalide : $apk"; exit 1; }
+            case "$apk" in
+              *api23*) want=23 ;;
+              *api29*) want=29 ;;
+              *) echo "::error::Variante inconnue : $apk"; exit 1 ;;
+            esac
+            "$BT/aapt2" dump badging "$apk" | grep -q "sdkVersion:'$want'" \
+              || { echo "::error::minSdk inattendu pour $apk (attendu $want)"; exit 1; }
+            echo "OK : $apk (minSdk $want)"
+          done
+
+      - name: Archiver les sources
+        run: zip -rq mada-courses-android-sources.zip . -x 'build/*' '*/build/*' '.gradle/*' '.git/*'
+
+      - name: Artefact APK debug
+        uses: actions/upload-artifact@v4
+        with:
+          name: mada-courses-debug-apk
+          path: app/build/outputs/apk/**/debug/*.apk
+
+      - name: Artefact APK release signés
+        uses: actions/upload-artifact@v4
+        with:
+          name: mada-courses-release-apk
+          path: app/build/outputs/apk/**/release/*.apk
+
+      - name: Artefact sources
+        uses: actions/upload-artifact@v4
+        with:
+          name: mada-courses-android-sources
+          path: mada-courses-android-sources.zip
