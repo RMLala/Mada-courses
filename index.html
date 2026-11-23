@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MADA COURSES PRO</title>
+<style>
+:root{--bg:#f4f6f3;--card:#fff;--text:#1c2320;--muted:#66716b;--accent:#16865a;--soft:#e4f3ec;--danger:#c93c3c;--line:#dfe5e0;--warn:#b7791f;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111513;--card:#1a201c;--text:#e6ebe7;--muted:#97a39b;--accent:#3fc08a;--soft:#1f3a2c;--danger:#ff7070;--line:#2a332d;--warn:#f0ad4e}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);padding-bottom:80px}
+header{padding:14px 16px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+header h1{margin:0;font-size:18px;color:var(--accent)}
+header small{color:var(--muted)}
+main{padding:14px;max-width:820px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav{overflow-x:auto}nav button{flex:0 0 auto;min-width:64px;border:0;background:none;color:var(--muted);padding:8px 4px;font-size:11px;cursor:pointer}
+nav button.on{color:var(--accent);font-weight:600}
+nav button span{display:block;font-size:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi b{display:block;font-size:16px;margin-top:4px}
+.muted,.kpi small{color:var(--muted);font-size:12px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:8px 12px}
+button.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+button.dng{color:var(--danger)}
+button.sm{padding:4px 8px;font-size:13px}
+input,select{font:inherit;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);max-width:100%}
+input.q{width:72px}
+input.p{width:112px}
+.row{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row .grow{flex:1;min-width:120px}
+.add{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.add input,.add select{flex:1;min-width:110px}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.warn{color:var(--warn)}
+.tag{font-size:11px;background:var(--soft);color:var(--accent);padding:2px 6px;border-radius:6px}
+.lbl{display:flex;flex-direction:column;gap:4px;margin:8px 0;font-size:13px;color:var(--muted)}
+h2{font-size:17px;margin:4px 0 10px}
+h3{font-size:15px;margin:14px 0 6px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.empty{color:var(--muted);text-align:center;padding:16px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:92px;background:#222;color:#fff;padding:10px 14px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9;max-width:90%}
+.toast.on{opacity:1}
+:root[data-theme="dark"]{--bg:#111513;--card:#1a201c;--text:#e6ebe7;--muted:#97a39b;--accent:#3fc08a;--soft:#1f3a2c;--danger:#ff7070;--line:#2a332d;--warn:#f0ad4e}
+:root[data-theme="light"]{--bg:#f4f6f3;--card:#fff;--text:#1c2320;--muted:#66716b;--accent:#16865a;--soft:#e4f3ec;--danger:#c93c3c;--line:#dfe5e0;--warn:#b7791f}
+.card{box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 18px rgba(0,0,0,.05);border-radius:16px}
+header{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--card) 88%,transparent)}
+nav{box-shadow:0 -6px 24px rgba(0,0,0,.07);justify-content:space-around;padding:4px 6px}
+nav button{border-radius:12px;transition:background .15s,color .15s;min-width:60px}
+nav button.on{background:var(--soft)}
+nav button span{transition:transform .15s}
+nav button.on span{transform:translateY(-1px)}
+button{transition:transform .08s,background .15s}
+button:active{transform:scale(.97)}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+h2{letter-spacing:-.01em}
+main{padding:16px 14px 24px}
+</style>
+</head>
+<body>
+<header><h1>🛒 MADA COURSES PRO</h1><small>Courses, budget et rapports du foyer · fonctionne hors ligne</small> <button class='sm' data-act='tab' data-v='reglages' style='float:right'>⚙ Réglages</button></header>
+<main id="app"></main>
+<nav id="nav"></nav>
+<div id="toast" class="toast"></div>
+<datalist id="units"></datalist>
+<script>
+const KEY='madaCoursesPro.v1';
+const PERIODS={matin:'Matin',dejeuner:'Déjeuner',apresmidi:'Après-midi',soir:'Soir',nuit:'Nuit',hors:'Hors horaires'};
+const PORDER=Object.keys(PERIODS);
+const PLACES={marche:'Marché (tsena)',epicerie:'Épicerie de quartier',ambulant:'Marchand ambulant',independant:'Vendeur indépendant',supermarche:'Supermarché',magasin:'Magasin spécialisé',autre:'Autre'};
+const MKIND={matin:'Achat du matin',dejeuner:'Achat du déjeuner',apresmidi:'Après-midi',soir:'Achat du soir',quotidien:'Quotidien',hebdo:'Hebdomadaire',mensuel:'Mensuel',exceptionnel:'Exceptionnel',autre:'Autre'};
+const CATS=['Riz et céréales','Légumes','Fruits','Viandes','Poissons et fruits de mer','Produits laitiers','Épicerie','Huiles et condiments','Boissons',"Produits d'entretien",'Hygiène et beauté','Gaz et combustibles','Autres'];
+const UNITS=['kg','demi-kg','g','L','pièce','kapoaka','daba','sobika','tas','botte','sachet','paquet','bouteille'];
+const TABS=[['accueil','🏠','Accueil'],['budget','💰','Budget'],['courses','🛒','Courses'],['modeles','📋','Modèles'],['historique','🕘','Historique'],['stocks','📦','Stocks'],['catalogue','🏷️','Produits'],['rapports','📊','Rapports']];
+
+/* ---------- utilitaires ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const p2=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+const iso=(off=0)=>{const d=new Date();d.setDate(d.getDate()+off);return ymd(d)};
+const fdate=s=>{const [y,m,d]=s.split('-');return d+'/'+m+'/'+y};
+const money=n=>Math.round(Number(n)||0).toLocaleString('fr-FR').replace(/[\u202f\u00a0]/g,' ')+' Ar';
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:0};
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+const ITEM=(name,qty,unit,est,cat,price=null,bought=false)=>({id:uid(),name,qty,unit,est,cat,price,bought});
+const strip=items=>items.map(i=>({id:uid(),name:i.name,qty:i.qty,unit:i.unit,est:i.est,cat:i.cat,price:null,bought:false}));
+const periodOf=m=>PERIODS[m.kind]?m.kind:'hors';
+const spent=items=>items.reduce((s,i)=>s+(i.bought&&i.price!=null?i.qty*i.price:0),0);
+const estimated=items=>items.reduce((s,i)=>s+i.qty*i.est,0);
+const lines=cs=>cs.flatMap(c=>c.items.filter(i=>i.bought&&i.price!=null).map(i=>({c,i,amt:i.qty*i.price})));
+const sumBy=(arr,f)=>{const m={};arr.forEach(x=>{const k=f(x)||'—';m[k]=(m[k]||0)+x.amt});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
+const kpi=(label,value)=>`<div class="kpi"><small>${label}</small><b>${value}</b></div>`;
+const bars=(en,tot)=>en.length?en.map(([k,v])=>{const p=tot?Math.round(v/tot*100):0;return `<div class="row"><div class="grow">${esc(k)}<div class="bar"><i style="width:${p}%"></i></div></div><b>${money(v)}</b><small class="muted">${p}%</small></div>`}).join(''):'<div class="empty">Aucune dépense</div>';
+const monthRange=off=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+off);const y=d.getFullYear(),m=d.getMonth();return{from:ymd(new Date(y,m,1)),to:ymd(new Date(y,m+1,0))}};
+
+/* ---------- stockage ---------- */
+function seed(){return{v:3,settings:{budgetMensuel:0},models:[],courses:[],remises:[],stocks:[],shops:[],cats:CATS.slice(),products:[]}}
+function demo(){const o=demoData();o.stocks=[];o.shops=[];o.cats=CATS.slice();return o}
+function demoData(){
+  return{v:1,settings:{budgetMensuel:600000},
+    models:[
+      {id:uid(),name:'Achat du matin',kind:'matin',notes:'Pain et lait',items:[ITEM('Pain',10,'pièce',500,'Épicerie'),ITEM('Lait',1,'L',4500,'Produits laitiers')]},
+      {id:uid(),name:'Achat du soir',kind:'soir',notes:'',items:[ITEM('Riz',5,'kg',3000,'Riz et céréales'),ITEM('Oignon',1,'kapoaka',1000,'Légumes')]},
+      {id:uid(),name:'Achat hebdomadaire',kind:'hebdo',notes:'',items:[ITEM('Huile',1,'L',6000,'Huiles et condiments'),ITEM('Savon',2,'pièce',1500,"Produits d'entretien")]}],
+    courses:[{id:uid(),date:iso(-1),period:'matin',place:'marche',lieu:'Tsena Analakely',notes:'Donnée de démo',demo:true,
+      items:[ITEM('Riz',5,'kg',3000,'Riz et céréales',2800,true),ITEM('Tomate',2,'kapoaka',1200,'Légumes',1400,true),ITEM('Poisson',1,'kg',12000,'Poissons et fruits de mer',11000,true)]}],
+    remises:[{id:uid(),date:iso(-2),amount:200000,comment:'Remise de démo'}]};
+}
+function load(){try{const s=localStorage.getItem(KEY);if(s){const o=JSON.parse(s);o.stocks=o.stocks||[];o.shops=o.shops||[];o.cats=o.cats||CATS.slice();o.remises=o.remises||[];o.courses=o.courses||[];o.models=o.models||[];o.settings=o.settings||{budgetMensuel:0};o.products=o.products||[];return o}}catch(e){}return seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db));autoSnap()}catch(e){toast('Sauvegarde impossible sur cet appareil')}}
+
+/* ---------- état ---------- */
+let db=load();
+let pending=null;
+let ui={tab:'accueil',courseId:null,modelId:null,updFor:null,catQ:'',filter:{period:'',place:''},rpt:monthRange(0)};
+let tt;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
+function sure(key){if(pending===key){pending=null;return true}pending=key;toast('Touchez à nouveau pour confirmer');setTimeout(()=>{if(pending===key)pending=null},4000);return false}
+function owner(kind,id){return kind==='course'?db.courses.find(c=>c.id===id):db.models.find(m=>m.id===id)}
+function makeCourse(date,period,items){const c={id:uid(),date,period,place:'marche',lieu:'',notes:'',items};db.courses.push(c);return c}
+function openC(c){ui.tab='courses';ui.courseId=c.id}
+
+/* ---------- vues ---------- */
+function courseRow(c){
+  const tot=spent(c.items);
+  return `<div class="row" style="border:0;padding:0"><div class="grow"><b>${PERIODS[c.period]||esc(c.period)}</b> · ${fdate(c.date)} ${c.demo?'<span class="tag">démo</span>':''}<div class="muted">${esc(PLACES[c.place]||'')}${c.lieu?' — '+esc(c.lieu):''} · ${c.items.length} produit(s)</div></div><b>${money(tot)}</b></div>`;
+}
+function courseCard(c){return `<div class="card" style="cursor:pointer" data-act="openCourse" data-id="${c.id}">${courseRow(c)}</div>`}
+function itemRow(i,kind,owner){
+  const dd=`data-kind="${kind}" data-owner="${owner}" data-iid="${i.id}"`;
+  const check=kind==='course'?`<input type="checkbox" ${i.bought?'checked':''} data-set="item" data-f="bought" ${dd} title="Acheté">`:'';
+  const price=kind==='course'?`<input class="p" type="number" step="any" min="0" placeholder="payé" value="${i.price??''}" data-set="item" data-f="price" ${dd}>`:'';
+  return `<div class="row">${check}<div class="grow"><b>${esc(i.name)}</b><div class="muted">${esc(i.cat)} · ${esc(i.unit)}</div></div>
+    <input class="q" type="number" step="any" min="0" value="${i.qty}" data-set="item" data-f="qty" ${dd} title="Quantité">
+    <input class="p" type="number" step="any" min="0" placeholder="prix estimé" value="${i.est}" data-set="item" data-f="est" ${dd} title="Prix estimé">
+    ${price}
+    <button class="sm dng" data-act="delItem" ${dd}>✕</button></div>`;
+}
+function addForm(kind,id){return prodPicker()+addFormOld(kind,id)}
+function addFormOld(kind,id){
+  return `<div class="add"><input id="n_name" placeholder="Produit (ex. Riz)"><input id="n_qty" type="number" step="any" value="1" style="max-width:90px"><input id="n_unit" list="units" value="kg" style="max-width:110px"><input id="n_est" type="number" step="any" placeholder="Prix estimé"><select id="n_cat">${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><button class="pri" data-act="addItem" data-kind="${kind}" data-owner="${id}">Ajouter</button></div>`;
+}
+function vAccueil(){
+  const t=iso(),m=t.slice(0,7);
+  const today=db.courses.filter(c=>c.date===t).sort((a,b)=>PORDER.indexOf(a.period)-PORDER.indexOf(b.period));
+  const month=db.courses.filter(c=>c.date.startsWith(m));
+  const depT=today.reduce((s,c)=>s+spent(c.items),0);
+  const depM=month.reduce((s,c)=>s+spent(c.items),0);
+  const remis=db.remises.reduce((s,r)=>s+r.amount,0);
+  const depAll=db.courses.reduce((s,c)=>s+spent(c.items),0);
+  const bm=db.settings.budgetMensuel;
+  const top=sumBy(lines(month),x=>x.i.cat)[0];
+  const quick=['matin','dejeuner','soir'].map(p=>`<button class="pri" data-act="quick" data-period="${p}">${PERIODS[p]}</button>`).join('');
+  return `<h2>Bonjour · ${fdate(t)}</h2>
+  <div class="actions">${quick}<button data-act="newCourse">+ Nouvelle course</button></div>
+  <div class="kpis" style="margin-top:12px">
+    ${kpi("Dépensé aujourd'hui",money(depT))}
+    ${kpi('Dépensé ce mois',money(depM))}
+    ${kpi('Budget mensuel restant',bm?money(bm-depM):'Non défini')}
+    ${kpi('Reliquat (remis − dépensé)',money(remis-depAll))}
+    ${kpi('Courses ce mois',month.length)}
+    ${kpi('Catégorie la plus coûteuse',top?esc(top[0])+' · '+money(top[1]):'—')}
+  </div>
+  ${bm&&depM>bm?`<div class="card warn" style="margin-top:12px">⚠ Budget mensuel dépassé de ${money(depM-bm)}.</div>`:''}
+  <h3>Courses d'aujourd'hui</h3>
+  ${today.length?today.map(courseCard).join(''):'<div class="card empty">Aucune course aujourd\'hui. Touchez « Achat du matin » pour commencer.</div>'}`;
+}
+function vCourses(){
+  if(ui.courseId){const c=db.courses.find(x=>x.id===ui.courseId);if(c)return vCourse(c);ui.courseId=null}
+  const list=[...db.courses].sort((a,b)=>b.date.localeCompare(a.date)||PORDER.indexOf(a.period)-PORDER.indexOf(b.period));
+  return `${globalKpi()}<div class="actions"><button class="pri" data-act="newCourse">+ Nouvelle course</button></div>
+  <h3>Courses récentes</h3>${list.slice(0,30).map(courseCard).join('')||'<div class="card empty">Aucune course.</div>'}`;
+}
+function vCourse(c){
+  const est=estimated(c.items.filter(i=>i.bought)), tot=spent(c.items), n=c.items.filter(i=>i.bought).length;
+  const models=db.models.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');
+  return `<div class="actions"><button data-act="closeCourse">← Retour</button></div>
+  <div class="card">
+    <h2>${PERIODS[c.period]} · ${fdate(c.date)}</h2>
+    <div class="lbl">Date<input type="date" value="${c.date}" data-set="course" data-owner="${c.id}" data-f="date"></div>
+    <div class="lbl">Moment de la journée<select data-set="course" data-owner="${c.id}" data-f="period">${PORDER.map(p=>`<option value="${p}" ${p===c.period?'selected':''}>${PERIODS[p]}</option>`).join('')}</select></div>
+    <div class="lbl">Type de lieu<select data-set="course" data-owner="${c.id}" data-f="place">${Object.entries(PLACES).map(([k,v])=>`<option value="${k}" ${k===c.place?'selected':''}>${v}</option>`).join('')}</select></div>
+    <div class="lbl">Lieu (facultatif)<input value="${esc(c.lieu)}" placeholder="ex. Tsena Analakely" data-set="course" data-owner="${c.id}" data-f="lieu"></div>
+    <div class="kpis">${kpi('Estimé (produits achetés)',money(est))}${kpi('Dépensé réel',money(tot))}${kpi('Écart (estimé − payé)',money(est-tot))}</div>
+    <h3>Produits · ${c.items.length} · ${n} acheté(s)</h3>
+    ${c.items.map(i=>itemRow(i,'course',c.id)).join('')||'<div class="empty">Aucun produit. Ajoutez-en ci-dessous ou depuis un modèle.</div>'}
+    ${addForm('course',c.id)}
+    <div class="lbl" style="margin-top:12px">Ajouter les produits d'un modèle<select data-set="addModel" data-owner="${c.id}"><option value="">Choisir un modèle…</option>${models}</select></div>
+    <div class="lbl">Observations<input value="${esc(c.notes)}" data-set="course" data-owner="${c.id}" data-f="notes"></div>
+    ${ui.updFor===c.id?updPicker(c):''}
+    <div class='actions'>
+      ${c.validated?`<span class='tag'>Course validée</span>`:`<button class='pri' data-act='validateCourse' data-id='${c.id}'>Valider la course</button>`}
+      <button data-act='dupCourse' data-id='${c.id}'>Dupliquer</button>
+      <button data-act="courseToModel" data-id="${c.id}">Enregistrer comme modèle</button>
+      <button data-act='pickUpd' data-id='${c.id}'>Mettre à jour un modèle</button>
+      <button class="dng" data-act="delCourse" data-id="${c.id}">Supprimer</button>
+    </div>
+  </div>`;
+}
+function updPicker(c){return `<div class='card'><h3>Remplacer les produits d'un modèle</h3>${db.models.map(m=>`<div class='row'><div class='grow'>${esc(m.name)}</div><button class='sm dng' data-act='updModel' data-id='${m.id}'>Remplacer</button></div>`).join('')||`<div class='empty'>Aucun modèle.</div>`}</div>`}
+function vModeles(){
+  if(ui.modelId){const m=db.models.find(x=>x.id===ui.modelId);if(m)return vModel(m);ui.modelId=null}
+  return `<div class="actions"><button class="pri" data-act="newModel">+ Nouveau modèle</button></div>
+  <p class="muted">Un modèle est une liste réutilisable : créez une course à partir de lui sans rien ressaisir.</p>
+  ${db.models.map(m=>`<div class="card"><div class="row" style="border:0;padding:0"><div class="grow" style="cursor:pointer" data-act="openModel" data-id="${m.id}"><b>${esc(m.name)}</b><div class="muted">${esc(MKIND[m.kind]||'')} · ${m.items.length} produit(s) · estimé ${money(estimated(m.items))}</div></div><button class="sm pri" data-act="fromModel" data-id="${m.id}" data-period="${periodOf(m)}">Nouvelle course</button></div></div>`).join('')||'<div class="card empty">Aucun modèle.</div>'}`;
+}
+function vModel(m){
+  return `<div class="actions"><button data-act="closeModel">← Retour</button></div>
+  <div class="card">
+    <div class="lbl">Nom<input value="${esc(m.name)}" data-set="model" data-owner="${m.id}" data-f="name"></div>
+    <div class="lbl">Type<select data-set="model" data-owner="${m.id}" data-f="kind">${Object.entries(MKIND).map(([k,v])=>`<option value="${k}" ${k===m.kind?'selected':''}>${v}</option>`).join('')}</select></div>
+    <h3>Produits habituels</h3>
+    ${m.items.map(i=>itemRow(i,'model',m.id)).join('')||'<div class="empty">Aucun produit.</div>'}
+    ${addForm('model',m.id)}
+    <div class="lbl" style="margin-top:10px">Observations<input value="${esc(m.notes)}" data-set="model" data-owner="${m.id}" data-f="notes"></div>
+    <p class="muted">Estimation totale : ${money(estimated(m.items))}</p>
+    <div class="actions">
+      <button class="pri" data-act="fromModel" data-id="${m.id}" data-period="${periodOf(m)}">Créer une course</button>
+      <button data-act="dupModel" data-id="${m.id}">Dupliquer</button>
+      <button class="dng" data-act="delModel" data-id="${m.id}">Supprimer</button>
+    </div>
+  </div>`;
+}
+function vHistorique(){
+  const f=ui.filter;
+  const list=db.courses.filter(c=>(!f.period||c.period===f.period)&&(!f.place||c.place===f.place)).sort((a,b)=>b.date.localeCompare(a.date)||PORDER.indexOf(a.period)-PORDER.indexOf(b.period));
+  const tot=list.reduce((s,c)=>s+spent(c.items),0);
+  return `<div class="card"><div class="kpis">
+    <label class="lbl">Moment<select data-set="filter" data-f="period"><option value="">Tous</option>${PORDER.map(p=>`<option value="${p}" ${f.period===p?'selected':''}>${PERIODS[p]}</option>`).join('')}</select></label>
+    <label class="lbl">Type de lieu<select data-set="filter" data-f="place"><option value="">Tous</option>${Object.entries(PLACES).map(([k,v])=>`<option value="${k}" ${f.place===k?'selected':''}>${v}</option>`).join('')}</select></label>
+  </div><p><b>${list.length}</b> course(s) · total <b>${money(tot)}</b></p></div>
+  ${list.map(c=>`<div class="card"><div style="cursor:pointer" data-act="openCourse" data-id="${c.id}">${courseRow(c)}</div>
+    <div class="actions"><button class="sm" data-act="dupCourse" data-id="${c.id}">Dupliquer</button><button class="sm" data-act="courseToModel" data-id="${c.id}">Reprendre comme modèle</button></div></div>`).join('')||'<div class="card empty">Aucune course pour ces filtres.</div>'}`;
+}
+function vBudget(){
+  const remis=db.remises.reduce((s,r)=>s+r.amount,0), dep=db.courses.reduce((s,c)=>s+spent(c.items),0), rel=remis-dep;
+  return `<div class="kpis">${kpi('Argent remis',money(remis))}${kpi('Dépenses réelles',money(dep))}</div>
+  <div class="card" style="margin-top:12px"><small class="muted">${rel>=0?'Reliquat à restituer':'Dépassement à compléter'}</small>
+    <h2 class="${rel<0?'warn':''}" style="font-size:24px">${money(Math.abs(rel))}</h2>
+    <p class="muted">Reliquat = argent remis − dépenses réelles enregistrées. Les montants prévus ne sont pas comptés.</p></div>
+  <div class="card"><h3>Budget mensuel</h3><div class="add"><input id="bm" type="number" step="any" min="0" value="${db.settings.budgetMensuel||''}" placeholder="Montant Ar"><button class="pri" data-act="saveBudget">Enregistrer</button></div></div>
+  <div class="card"><h3>Remises d'argent</h3>
+    <div class="add"><input id="r_date" type="date" value="${iso()}"><input id="r_amt" type="number" step="any" min="0" placeholder="Montant Ar"><input id="r_com" placeholder="Commentaire"><button class="pri" data-act="addRemise">Ajouter</button></div>
+    ${[...db.remises].sort((a,b)=>b.date.localeCompare(a.date)).map(r=>`<div class="row"><div class="grow">${fdate(r.date)} · <b>${money(r.amount)}</b><div class="muted">${esc(r.comment)}</div></div><button class="sm dng" data-act="delRemise" data-id="${r.id}">✕</button></div>`).join('')||'<div class="empty">Aucune remise.</div>'}
+  </div>
+`;
+}
+function vRapports(){
+  const r=ui.rpt;
+  const cs=db.courses.filter(c=>c.date>=r.from&&c.date<=r.to);
+  const L=lines(cs), tot=L.reduce((s,x)=>s+x.amt,0);
+  const days=Math.max(1,Math.round((Date.parse(r.to)-Date.parse(r.from))/864e5)+1);
+  const dayTot={};L.forEach(x=>dayTot[x.c.date]=(dayTot[x.c.date]||0)+x.amt);
+  const dayKeys=Object.keys(dayTot).sort(), dmax=Math.max(1,...Object.values(dayTot));
+  const evo=dayKeys.map(k=>`<div class="row"><div class="grow">${fdate(k)}<div class="bar"><i style="width:${Math.round(dayTot[k]/dmax*100)}%"></i></div></div><b>${money(dayTot[k])}</b></div>`).join('')||'<div class="empty">Aucune dépense sur la période</div>';
+  const per=PORDER.map(p=>[PERIODS[p],L.filter(x=>x.c.period===p).reduce((s,x)=>s+x.amt,0)]).filter(x=>x[1]>0);
+  const prod={};L.forEach(x=>{const k=x.i.name.trim().toLowerCase();prod[k]=prod[k]||{n:x.i.name,amt:0,q:0,buys:0};prod[k].amt+=x.amt;prod[k].q+=x.i.qty;prod[k].buys++});
+  const topP=Object.values(prod).sort((a,b)=>b.amt-a.amt).slice(0,10).map(p=>[`${p.n} (${p.q} u, ${p.buys} achat(s))`,p.amt]);
+  const f0=new Date(r.from+'T12:00:00'), plen=days;
+  const pTo=ymd(new Date(f0-864e5)), pFrom=ymd(new Date(f0-plen*864e5));
+  const prevTot=lines(db.courses.filter(c=>c.date>=pFrom&&c.date<=pTo)).reduce((s,x)=>s+x.amt,0);
+  const dlt=prevTot?Math.round((tot-prevTot)/prevTot*100):null;
+  const cmp=`<div class='card'><h3>Comparaison avec la période précédente</h3>Précédente : ${money(prevTot)} · actuelle : ${money(tot)} · ${dlt===null?'pas de référence':(dlt>=0?'+':'')+dlt+' %'}</div>`;
+  const dim=new Date(+r.to.slice(0,4),+r.to.slice(5,7),0).getDate();
+  const bm=db.settings.budgetMensuel;
+  const prevu=bm&&r.from.slice(0,7)===r.to.slice(0,7)?bm*days/dim:0;
+  return `<div class="card"><h2>Période</h2>
+    <div class="kpis"><label class="lbl">Du<input type="date" value="${r.from}" data-set="rpt" data-f="from"></label><label class="lbl">Au<input type="date" value="${r.to}" data-set="rpt" data-f="to"></label></div>
+    <div class="actions"><button data-act="rptDay">Aujourd'hui</button><button data-act="rptMonth" data-off="0">Ce mois</button><button data-act="rptMonth" data-off="-1">Mois précédent</button></div></div>
+  <div class="kpis">${kpi('Total dépensé',money(tot))}${kpi('Moyenne quotidienne',money(tot/days))}${kpi('Courses',cs.length)}${kpi('Achats enregistrés',L.length)}</div>
+  ${cmp}
+  ${prevu?`<div class="card" style="margin-top:12px"><h3>Budget prévu / réalisé</h3>Prévu ${money(prevu)} · réalisé ${money(tot)} · écart ${money(prevu-tot)}</div>`:''}
+  <h3>Évolution journalière</h3><div class="card">${evo}</div>
+  <h3>Par moment de la journée</h3><div class="card">${bars(per,tot)}</div>
+  <h3>Par catégorie</h3><div class="card">${bars(sumBy(L,x=>x.i.cat),tot)}</div>
+  <h3>Par type de commerce</h3><div class="card">${bars(sumBy(L,x=>PLACES[x.c.place]),tot)}</div>
+  <h3>Par lieu</h3><div class="card">${bars(sumBy(L,x=>x.c.lieu||PLACES[x.c.place]),tot)}</div>
+  <h3>Top 10 des produits les plus coûteux</h3><div class="card">${bars(topP,tot)}</div>`;
+}
+
+function vStocks(){
+  const rows=db.stocks.map(s=>{const low=s.qty<=s.min;return `<div class='card'><div class='row' style='border:0;padding:0'><div class='grow'><b>${esc(s.name)}</b> ${low?`<span class='tag' style='color:var(--danger)'>stock faible</span>`:''}<div class='muted'>Stock ${s.qty} ${esc(s.unit)} · minimum ${s.min} · entrées ${s.entries} · sorties ${s.exits} · conso. estimée ${rateOf(s).toFixed(2)}/jour${s.expiry?' · péremption '+fdate(s.expiry):''}</div></div><button class='sm dng' data-act='stockDel' data-id='${s.id}'>✕</button></div><div class='add'><input id='sm_${s.id}' type='number' step='any' min='0' placeholder='Quantité' style='max-width:120px'><button class='sm' data-act='stockMove' data-id='${s.id}' data-dir='in'>+ Entrée</button><button class='sm' data-act='stockMove' data-id='${s.id}' data-dir='out'>− Sortie</button></div></div>`}).join('');
+  return `<div class='actions'><button class='pri' data-act='stockToCourse'>Créer une course avec les stocks faibles</button></div>
+  <div class='card'><h3>Ajouter un produit en stock</h3><div class='add'><input id='s_name' placeholder='Produit'><input id='s_qty' type='number' step='any' min='0' value='0' style='max-width:90px'><input id='s_unit' list='units' value='kg' style='max-width:110px'><input id='s_min' type='number' step='any' min='0' placeholder='Minimum' style='max-width:110px'><input id='s_exp' type='date' title='Date de péremption (facultatif)'><button class='pri' data-act='stockAdd'>Ajouter</button></div></div>
+  ${rows||`<div class='card empty'>Aucun produit en stock.</div>`}`;
+}
+function vCatalogue(){
+  const L=lines(db.courses).sort((a,b)=>b.c.date.localeCompare(a.c.date));
+  const P={};
+  L.forEach(x=>{const k=x.i.name.trim().toLowerCase()+'|'+x.i.unit;const p=P[k]||(P[k]={n:x.i.name,unit:x.i.unit,cat:x.i.cat,last:null,lastDate:'',sum:0,q:0,min:Infinity,max:0,place:'',count:0});p.count++;(p.hist=p.hist||[]).push([x.c.date,x.i.price]);p.sum+=x.i.qty*x.i.price;p.q+=x.i.qty;p.min=Math.min(p.min,x.i.price);p.max=Math.max(p.max,x.i.price);if(!p.last){p.last=x.i.price;p.lastDate=x.c.date;p.place=PLACES[x.c.place]+(x.c.lieu?' — '+x.c.lieu:'')}});
+  const q=ui.catQ.trim().toLowerCase();
+  const list=Object.values(P).filter(p=>!q||p.n.toLowerCase().includes(q)).sort((a,b)=>a.n.localeCompare(b.n));
+  return `${prodManager()}<div class='card'><label class='lbl'>Rechercher un produit<input value='${esc(ui.catQ)}' placeholder='ex. riz' data-set='cq'></label><p class='muted'>Prix calculés à partir des achats réellement payés. Le dernier prix indique sa date : ce n'est pas un prix actuel confirmé.</p></div>
+  ${list.map(p=>`<div class='card'><b>${esc(p.n)}</b> <span class='muted'>· ${esc(p.unit)} · ${esc(p.cat)}</span><div class='kpis' style='margin-top:8px'>${kpi('Dernier prix payé',money(p.last)+' ('+fdate(p.lastDate)+')')}${kpi('Prix moyen pondéré',money(p.q?p.sum/p.q:0))}${kpi('Min / max',money(p.min)+' / '+money(p.max))}${kpi('Achats',p.count+' · '+esc(p.place))}</div><div class='muted' style='margin-top:6px'>Historique : ${p.hist.slice(0,6).map(h=>fdate(h[0])+' : '+money(h[1])).join(' · ')}</div></div>`).join('')||`<div class='card empty'>Aucun produit acheté pour le moment.</div>`}`;
+}
+function vReglages(){
+  return `<h2>Réglages</h2>
+  <div class='card'><h3>Données de l'appareil</h3><p class='muted'>${db.courses.length} course(s) · ${db.models.length} modèle(s) · ${db.stocks.length} produit(s) en stock · ${db.remises.length} remise(s). Tout est stocké uniquement dans ce navigateur.</p>
+  <div class='actions'><button data-act='loadDemo'>Charger des données de démo</button><button class='dng' data-act='resetAll'>Tout effacer et recommencer</button></div></div>
+${reglagesExtra()}
+  <div class='card'><h3>Pour commencer</h3><p class='muted'>L'application est vide. Créez un modèle dans l'onglet Modèles, ou une course directement depuis l'accueil. « Tout effacer » supprime courses, modèles, stocks et remises, après confirmation.</p></div>`;
+}
+
+const BK='madaCoursesPro.backups', LS='madaCoursesPro.lastSnap', LB='madaCoursesPro.lastBackup';
+function cats(){return db.cats||CATS}
+function globalKpi(){const rec=db.remises.reduce((s,r)=>s+r.amount,0),dep=db.courses.reduce((s,c)=>s+spent(c.items),0);return `<div class='kpis' style='margin-bottom:12px'>${kpi('Recettes (argent remis)',money(rec))}${kpi('D\u00e9penses totales',money(dep))}${kpi('Solde',money(rec-dep))}</div>`}
+function autoSnap(){const last=+(localStorage.getItem(LS)||0);if(Date.now()-last<2*864e5)return;try{let arr=[];try{arr=JSON.parse(localStorage.getItem(BK)||'[]')}catch(e){}arr.unshift({at:Date.now(),data:JSON.stringify(db)});localStorage.setItem(BK,JSON.stringify(arr.slice(0,5)));localStorage.setItem(LS,String(Date.now()))}catch(e){}}
+function backupDue(){return db.courses.length>0&&Date.now()-(+(localStorage.getItem(LB)||0))>2*864e5}
+function bannerBackup(){return backupDue()?`<div class='card warn'>\ud83d\udcbe Sauvegarde recommand\u00e9e tous les 2 jours. <div class='actions'><button class='sm pri' data-act='exportJSON'>T\u00e9l\u00e9charger</button><button class='sm' data-act='dismissBackup'>Plus tard</button></div></div>`:''}
+function download(name,type,text){const b=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+function exportJSON(){download('mada-courses-'+iso()+'.json','application/json',JSON.stringify(db,null,2));localStorage.setItem(LB,String(Date.now()));toast('Sauvegarde t\u00e9l\u00e9charg\u00e9e')}
+function exportCSV(){const rows=[['date','moment','type_lieu','lieu','produit','categorie','quantite','unite','estime','paye','achete']];db.courses.forEach(c=>c.items.forEach(i=>rows.push([c.date,PERIODS[c.period]||c.period,PLACES[c.place]||'',c.lieu,i.name,i.cat,i.qty,i.unit,i.est,i.price??'',i.bought?'oui':'non'])));const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');download('mada-achats-'+iso()+'.csv','text/csv',csv);toast('Export CSV t\u00e9l\u00e9charg\u00e9')}
+function reglagesExtra(){
+  const last=+(localStorage.getItem(LB)||0), snap=+(localStorage.getItem(LS)||0);
+  const lastTxt=last?new Date(last).toLocaleString('fr-FR'):'jamais';
+  const snapTxt=snap?new Date(snap).toLocaleString('fr-FR'):'jamais';
+  return `<div class='card'><h3>Sauvegarde et restauration</h3><p class='muted'>Sauvegarde automatique dans le navigateur tous les 2 jours (5 derni\u00e8res conserv\u00e9es). Derni\u00e8re sauvegarde automatique : ${snapTxt}. Dernier fichier t\u00e9l\u00e9charg\u00e9 : ${lastTxt}.</p>
+  <div class='actions'><button class='pri' data-act='exportJSON'>T\u00e9l\u00e9charger une sauvegarde (.json)</button><button data-act='exportCSV'>Exporter les achats (.csv)</button></div>
+  <div class='lbl' style='margin-top:10px'>Restaurer depuis un fichier .json<input type='file' id='imp' accept='.json,application/json'></div></div>
+  <div class='card'><h3>Cat\u00e9gories</h3>${cats().map(c=>`<div class='row'><div class='grow'>${esc(c)}</div><button class='sm dng' data-act='delCat' data-v='${esc(c)}'>\u2715</button></div>`).join('')}<div class='add'><input id='nc' placeholder='Nouvelle cat\u00e9gorie'><button data-act='addCat'>Ajouter</button></div></div>
+  <div class='card'><h3>Magasins et march\u00e9s</h3>${db.shops.map(s=>`<div class='row'><div class='grow'><b>${esc(s.name)}</b><div class='muted'>${esc(PLACES[s.type]||'')} \u00b7 ${esc(s.address)} \u00b7 ${esc(s.contact)}</div><div class='muted'>${esc(s.notes)}</div></div><button class='sm dng' data-act='delShop' data-id='${s.id}'>\u2715</button></div>`).join('')||`<div class='empty'>Aucun magasin enregistr\u00e9.</div>`}
+  <div class='add'><input id='sh_n' placeholder='Nom'><input id='sh_a' placeholder='Adresse'><select id='sh_t'>${Object.entries(PLACES).map(([k,v])=>`<option value='${k}'>${v}</option>`).join('')}</select><input id='sh_c' placeholder='Contact'><input id='sh_o' placeholder='Observations'><button class='pri' data-act='addShop'>Ajouter</button></div></div>
+  <div class='card'><h3>Affichage</h3><button data-act='toggleTheme'>Basculer clair / sombre</button></div>`;
+}
+
+function prodPicker(){const ps=db.products||[];return ps.length?`<div class='lbl'>Choisir un produit enregistr\u00e9<select id='n_prod'><option value=''>\u2014 saisie libre \u2014</option>${ps.map(p=>`<option value='${p.id}'>${esc(p.name)} (${esc(p.unit)})</option>`).join('')}</select></div>`:''}
+function prodManager(){return `<div class='card'><h3>Mes produits</h3><p class='muted'>Cr\u00e9ez vos produits une fois, puis s\u00e9lectionnez-les dans les mod\u00e8les et les courses.</p><div class='add'><input id='pr_n' placeholder='Nom du produit'><select id='pr_c'>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><input id='pr_u' list='units' value='kg' style='max-width:110px'><input id='pr_p' type='number' step='any' min='0' placeholder='Prix de r\u00e9f\u00e9rence' style='max-width:150px'><button class='pri' data-act='addProd'>Cr\u00e9er</button></div>${(db.products||[]).map(p=>`<div class='row'><div class='grow'><b>${esc(p.name)}</b> <span class='muted'>${esc(p.unit)} \u00b7 r\u00e9f. ${money(p.ref)}</span><div class='lbl' style='margin:4px 0 0'><select data-set='prod' data-f='cat' data-owner='${p.id}'>${cats().map(c=>`<option ${c===p.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></div></div><button class='sm dng' data-act='delProd' data-id='${p.id}'>\u2715</button></div>`).join('')||`<div class='empty'>Aucun produit pour le moment.</div>`}</div>`}
+
+function rateOf(s){const h=(s.hist||[]).slice().sort((a,b)=>a[0].localeCompare(b[0]));if(h.length<2)return 0;const days=(Date.parse(h[h.length-1][0])-Date.parse(h[0][0]))/864e5;if(days<=0)return 0;return h.slice(0,-1).reduce((t,x)=>t+x[1],0)/days}
+/* ---------- actions ---------- */
+function act(a,d){
+  switch(a){
+    case 'tab': ui.tab=d.v; ui.courseId=null; ui.modelId=null; break;
+    case 'newCourse': openC(makeCourse(iso(),'matin',[])); break;
+    case 'quick': {
+      const p=d.period;
+      let c=db.courses.find(x=>x.date===iso()&&x.period===p);
+      if(!c){const m=db.models.find(x=>x.kind===p);c=makeCourse(iso(),p,m?strip(m.items):[]);}
+      openC(c); break;
+    }
+    case 'fromModel': {const m=db.models.find(x=>x.id===d.id);openC(makeCourse(iso(),d.period||'hors',m?strip(m.items):[]));break}
+    case 'openCourse': ui.tab='courses';ui.courseId=d.id;break;
+    case 'closeCourse': ui.courseId=null;break;
+    case 'delCourse': if(sure('dc'+d.id)){db.courses=db.courses.filter(c=>c.id!==d.id);ui.courseId=null;toast('Course supprimée')}break;
+    case 'dupCourse': {const c=db.courses.find(x=>x.id===d.id);if(c){const n=makeCourse(iso(),c.period,strip(c.items));n.place=c.place;n.lieu=c.lieu;openC(n);toast('Course dupliquée : saisissez les nouveaux montants')}break}
+    case 'courseToModel': {
+      const c=db.courses.find(x=>x.id===d.id);
+      if(c){const m={id:uid(),name:(PERIODS[c.period]||'Course')+' du '+fdate(c.date),kind:MKIND[c.period]?c.period:'autre',notes:'',items:strip(c.items)};db.models.push(m);ui.tab='modeles';ui.courseId=null;ui.modelId=m.id;toast('Modèle créé : renommez-le si besoin')}
+      break;
+    }
+    case 'delItem': {const o=owner(d.kind,d.owner);if(o)o.items=o.items.filter(i=>i.id!==d.iid);break}
+    case 'addItem': {
+      const name=$('#n_name').value.trim();
+      if(!name){toast('Indiquez le nom du produit');break}
+      const o=owner(d.kind,d.owner);
+      if(o)o.items.push({id:uid(),pid:($('#n_prod')&&$('#n_prod').value)||null,name,qty:num($('#n_qty').value)||1,unit:$('#n_unit').value.trim()||'pièce',est:num($('#n_est').value),cat:$('#n_cat').value,price:null,bought:false});
+      break;
+    }
+    case 'newModel': {const m={id:uid(),name:'Nouveau modèle',kind:'autre',notes:'',items:[]};db.models.push(m);ui.tab='modeles';ui.modelId=m.id;break}
+    case 'openModel': ui.modelId=d.id;break;
+    case 'closeModel': ui.modelId=null;break;
+    case 'dupModel': {const m=db.models.find(x=>x.id===d.id);if(m){const n={...m,id:uid(),name:m.name+' (copie)',items:m.items.map(i=>({...i,id:uid()}))};db.models.push(n);ui.modelId=n.id}break}
+    case 'delModel': if(sure('dm'+d.id)){db.models=db.models.filter(m=>m.id!==d.id);ui.modelId=null;toast('Modèle supprimé')}break;
+    case 'addRemise': {
+      const amt=num($('#r_amt').value);
+      if(amt<=0){toast('Montant invalide');break}
+      db.remises.push({id:uid(),date:$('#r_date').value||iso(),amount:amt,comment:$('#r_com').value.trim()});
+      toast('Remise enregistrée');break;
+    }
+    case 'delRemise': if(sure('dr'+d.id)){db.remises=db.remises.filter(r=>r.id!==d.id);toast('Remise supprimée')}break;
+    case 'saveBudget': db.settings.budgetMensuel=num($('#bm').value);toast('Budget enregistré');break;
+    case 'validateCourse': {const c=db.courses.find(x=>x.id===d.id);if(!c||c.validated)break;const bought=c.items.filter(i=>i.bought&&i.price!=null);if(!bought.length){toast('Aucun article achet\u00e9 \u00e0 valider');break}db.stocks.forEach(s=>{if(!s.last||c.date<=s.last)return;const days=(Date.parse(c.date)-Date.parse(s.last))/864e5;const ex=Math.min(s.qty,Math.round(rateOf(s)*days*100)/100);if(ex>0){s.qty=Math.round((s.qty-ex)*100)/100;s.exits=Math.round((s.exits+ex)*100)/100}});
+bought.forEach(i=>{let s=db.stocks.find(x=>x.name.trim().toLowerCase()===i.name.trim().toLowerCase()&&x.unit===i.unit);if(!s){s={id:uid(),name:i.name,qty:0,unit:i.unit,min:0,expiry:'',entries:0,exits:0,last:'',hist:[]};db.stocks.push(s)}if(!s.last||c.date>s.last)s.last=c.date;s.hist=(s.hist||[]).concat([[c.date,i.qty]]);s.qty=Math.round((s.qty+i.qty)*100)/100;s.entries+=i.qty});c.validated=true;toast('Course valid\u00e9e : stocks mis \u00e0 jour');break}
+    case 'exportJSON': exportJSON();break;
+    case 'exportCSV': exportCSV();break;
+    case 'dismissBackup': localStorage.setItem(LB,String(Date.now()));break;
+    case 'addCat': {const v=$('#nc').value.trim();if(v&&!cats().includes(v)){db.cats=[...cats(),v]}break}
+    case 'delCat': if(sure('dc2'+d.v)){db.cats=cats().filter(x=>x!==d.v)}break;
+    case 'addShop': {const n=$('#sh_n').value.trim();if(!n){toast('Nom du magasin requis');break}db.shops.push({id:uid(),name:n,address:$('#sh_a').value.trim(),type:$('#sh_t').value,contact:$('#sh_c').value.trim(),notes:$('#sh_o').value.trim()});break}
+    case 'delShop': if(sure('ds'+d.id)){db.shops=db.shops.filter(x=>x.id!==d.id)}break;
+    case 'toggleTheme': document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';break;
+    case 'addProd': {const n=$('#pr_n').value.trim();if(!n){toast('Nom du produit requis');break}db.products=[...(db.products||[]),{id:uid(),name:n,cat:$('#pr_c').value,unit:$('#pr_u').value.trim()||'pièce',ref:num($('#pr_p').value)}];toast('Produit cr\u00e9\u00e9');break}
+    case 'delProd': if(sure('dp'+d.id)){db.products=db.products.filter(x=>x.id!==d.id);toast('Produit supprim\u00e9')}break;
+    case 'resetAll': if(sure('reset')){db=seed();ui.courseId=null;ui.modelId=null;ui.updFor=null;toast('Toutes les données ont été effacées')}break;
+    case 'loadDemo': if(sure('demo')){db=demo();ui.courseId=null;ui.modelId=null;ui.updFor=null;toast('Données de démo chargées')}break;
+    case 'pickUpd': ui.updFor=d.id;break;
+    case 'updModel': if(sure('um'+d.id)){const m=db.models.find(x=>x.id===d.id),c=db.courses.find(x=>x.id===ui.updFor);if(m&&c){m.items=strip(c.items);toast('Modèle mis à jour')}ui.updFor=null}break;
+    case 'stockAdd': {const n=$('#s_name').value.trim();if(!n){toast('Nom du produit requis');break}db.stocks.push({id:uid(),name:n,qty:num($('#s_qty').value),unit:$('#s_unit').value.trim()||'pièce',min:num($('#s_min').value),expiry:$('#s_exp').value,entries:0,exits:0,last:iso(),hist:[]});break}
+    case 'stockMove': {const s=db.stocks.find(x=>x.id===d.id);const q=num($('#sm_'+d.id).value);if(!s||q<=0){toast('Quantité invalide');break}if(d.dir==='in'){s.qty+=q;s.entries+=q}else{if(q>s.qty){toast('Stock insuffisant');break}s.qty-=q;s.exits+=q}break}
+    case 'stockDel': if(sure('sd'+d.id)){db.stocks=db.stocks.filter(x=>x.id!==d.id);toast('Produit retiré du stock')}break;
+    case 'stockToCourse': {const low=db.stocks.filter(s=>s.qty<=s.min);if(!low.length){toast('Aucun stock faible');break}openC(makeCourse(iso(),'hors',low.map(s=>ITEM(s.name,Math.max(1,s.min*2-s.qty),s.unit,0,'Autres'))));toast('Liste créée à partir des stocks faibles');break}
+    case 'rptMonth': ui.rpt=monthRange(+d.off);break;
+    case 'rptDay': ui.rpt={from:iso(),to:iso()};break;
+  }
+}
+function setField(el){
+  const d=el.dataset, v=el.type==='checkbox'?el.checked:el.value;
+  if(d.set==='item'){
+    const o=owner(d.kind,d.owner), i=o&&o.items.find(x=>x.id===d.iid);
+    if(!i)return;
+    if(d.f==='qty'||d.f==='est') i[d.f]=num(v);
+    else if(d.f==='price'){i.price=v===''?null:num(v);if(i.price!==null)i.bought=true}
+    else if(d.f==='bought'){i.bought=v;if(v&&i.price==null)i.price=i.est}
+  }
+  else if(d.set==='course'||d.set==='model'){const o=owner(d.set,d.owner);if(o)o[d.f]=v}
+  else if(d.set==='addModel'){const m=db.models.find(x=>x.id===v),c=owner('course',d.owner);if(m&&c)c.items.push(...strip(m.items));if(m)toast('Produits ajoutés')}
+  else if(d.set==='prod'){const pr=(db.products||[]).find(x=>x.id===d.owner);if(pr)pr[d.f]=v}
+  else if(d.set==='cq'){ui.catQ=v}
+  else if(d.set==='rpt'){ui.rpt[d.f]=v}
+  else if(d.set==='filter'){ui.filter[d.f]=v}
+  save();render();
+}
+function render(){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.tab));
+  const V={accueil:vAccueil,courses:vCourses,modeles:vModeles,historique:vHistorique,budget:vBudget,stocks:vStocks,catalogue:vCatalogue,rapports:vRapports,reglages:vReglages};
+  $('#app').innerHTML=bannerBackup()+V[ui.tab]();
+}
+
+/* ---------- événements ---------- */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');
+  if(!el)return;
+  act(el.dataset.act,el.dataset);
+  save();render();
+});
+document.addEventListener('change',e=>{
+  if(e.target.dataset&&e.target.dataset.set)setField(e.target);
+});
+
+document.addEventListener('change',e=>{if(e.target.id!=='imp'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o||!Array.isArray(o.courses)||!Array.isArray(o.models)||!o.courses.every(c=>Array.isArray(c.items)))throw new Error('format');o.stocks=o.stocks||[];o.shops=o.shops||[];o.cats=o.cats||CATS.slice();o.remises=o.remises||[];o.settings=o.settings||{budgetMensuel:0};db=o;ui.courseId=null;ui.modelId=null;save();render();toast('Restauration r\u00e9ussie')}catch(err){toast('Fichier invalide : restauration annul\u00e9e')}};r.readAsText(e.target.files[0])});
+document.addEventListener('change',e=>{if(e.target.id!=='n_prod')return;const pr=(db.products||[]).find(x=>x.id===e.target.value);if(!pr)return;$('#n_name').value=pr.name;$('#n_unit').value=pr.unit;$('#n_cat').value=pr.cat;$('#n_est').value=pr.ref||''});
+/* ---------- démarrage ---------- */
+$('#nav').innerHTML=TABS.map(([k,ic,l])=>`<button data-act="tab" data-v="${k}"><span>${ic}</span>${l}</button>`).join('');
+$('#units').innerHTML=UNITS.map(u=>`<option value="${u}">`).join('');
+save();
+render();
+</script>
+</body>
+</html>
