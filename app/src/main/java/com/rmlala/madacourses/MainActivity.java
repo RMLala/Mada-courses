@@ -1,7 +1,9 @@
 package com.rmlala.madacourses;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +11,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,13 +23,16 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 /**
- * Affiche l'application MADA COURSES PRO (index.html, copié dans les assets au build)
- * dans une WebView. Les exports (fichiers blob) passent par un pont natif, car une
- * WebView ne sait pas enregistrer seule les téléchargements de type blob.
+ * Affiche MADA COURSES PRO (index.html, copié dans les assets au build) dans une WebView.
+ * - Exports : le JavaScript envoie les fichiers blob au pont natif (AndroidBridge.save).
+ * - Restauration : <input type="file"> ouvre le sélecteur Android via onShowFileChooser.
  */
 public class MainActivity extends Activity {
 
+    private static final int REQ_FILE_CHOOSER = 1001;
+
     private WebView web;
+    private ValueCallback<Uri[]> filePathCallback;
 
     // Intercepte les clics sur les liens de téléchargement blob et envoie le fichier au pont natif.
     private static final String DOWNLOAD_BRIDGE_JS =
@@ -57,6 +64,7 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(true);
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
+
         web.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -64,8 +72,40 @@ public class MainActivity extends Activity {
             }
         });
 
+        // Sans cette méthode, un <input type="file"> ne fait rien dans la WebView :
+        // c'était la cause de l'échec de la restauration sur Android.
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback,
+                                             FileChooserParams params) {
+                if (filePathCallback != null) {
+                    filePathCallback.onReceiveValue(null);
+                }
+                filePathCallback = callback;
+                try {
+                    startActivityForResult(params.createIntent(), REQ_FILE_CHOOSER);
+                } catch (ActivityNotFoundException e) {
+                    filePathCallback = null;
+                    Toast.makeText(MainActivity.this,
+                            "Aucun gestionnaire de fichiers disponible", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                return true;
+            }
+        });
+
         web.loadUrl("file:///android_asset/index.html");
         setContentView(web);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_FILE_CHOOSER && filePathCallback != null) {
+            Uri[] results = WebChromeClient.FileChooserParams.parseResult(resultCode, data);
+            filePathCallback.onReceiveValue(results);
+            filePathCallback = null;
+        }
     }
 
     @Override
@@ -100,12 +140,18 @@ public class MainActivity extends Activity {
             values.put(MediaStore.Downloads.DISPLAY_NAME, name);
             values.put(MediaStore.Downloads.MIME_TYPE, mime);
             Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+            if (uri == null) {
+                throw new IllegalStateException("Insertion impossible");
+            }
             try (OutputStream os = getContentResolver().openOutputStream(uri)) {
+                if (os == null) {
+                    throw new IllegalStateException("Flux de sortie indisponible");
+                }
                 os.write(data);
             }
             return "Téléchargements/" + name;
         }
-        // Android 6 à 9 : dossier Téléchargements propre à l'application, sans permission.
+        // Android 6 à 9 : dossier propre à l'application, sans permission.
         File dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         File file = new File(dir, name);
         try (FileOutputStream os = new FileOutputStream(file)) {
