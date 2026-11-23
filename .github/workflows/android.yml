@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - android-build
+      - premium-finalisation-20261123
   pull_request:
     branches:
       - android-build
