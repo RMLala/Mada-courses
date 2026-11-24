@@ -338,7 +338,7 @@ function reglagesExtra(){
   <div class='card'><h3>Cat\u00e9gories</h3>${cats().map(c=>`<div class='row'><div class='grow'>${esc(c)}</div><button class='sm dng' data-act='delCat' data-v='${esc(c)}'>\u2715</button></div>`).join('')}<div class='add'><input id='nc' placeholder='Nouvelle cat\u00e9gorie'><button data-act='addCat'>Ajouter</button></div></div>
   <div class='card'><h3>Magasins et march\u00e9s</h3>${db.shops.map(s=>`<div class='row'><div class='grow'><b>${esc(s.name)}</b><div class='muted'>${esc(PLACES[s.type]||'')} \u00b7 ${esc(s.address)} \u00b7 ${esc(s.contact)}</div><div class='muted'>${esc(s.notes)}</div></div><button class='sm dng' data-act='delShop' data-id='${s.id}'>\u2715</button></div>`).join('')||`<div class='empty'>Aucun magasin enregistr\u00e9.</div>`}
   <div class='add'><input id='sh_n' placeholder='Nom'><input id='sh_a' placeholder='Adresse'><select id='sh_t'>${Object.entries(PLACES).map(([k,v])=>`<option value='${k}'>${v}</option>`).join('')}</select><input id='sh_c' placeholder='Contact'><input id='sh_o' placeholder='Observations'><button class='pri' data-act='addShop'>Ajouter</button></div></div>
-  <div class='card'><h3>Affichage</h3><button data-act='toggleTheme'>Basculer clair / sombre</button></div>`;
+  <div class='card'><h3>Affichage</h3><button data-act='toggleTheme'>Basculer clair / sombre</button></div>${cloudPanel()}`;
 }
 
 function prodPicker(){const ps=db.products||[];return ps.length?`<div class='lbl'>Choisir un produit enregistr\u00e9<select id='n_prod'><option value=''>\u2014 saisie libre \u2014</option>${ps.map(p=>`<option value='${p.id}'>${esc(p.name)} (${esc(p.unit)})</option>`).join('')}</select></div>`:''}
