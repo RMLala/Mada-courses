@@ -80,7 +80,15 @@ public class MainActivity extends Activity {
                 filePathCallback = callback;
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/json");
+                String[] accepted = params != null ? params.getAcceptTypes() : null;
+                String mime = "*/*";
+                if (accepted != null && accepted.length == 1 && accepted[0] != null
+                        && !accepted[0].trim().isEmpty()) {
+                    mime = accepted[0].trim();
+                } else if (accepted != null && accepted.length > 1) {
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, accepted);
+                }
+                intent.setType(mime);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 try {
                     startActivityForResult(intent, FILE_CHOOSER_REQUEST);
