@@ -16,6 +16,15 @@ import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,6 +71,7 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(true);
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
+        web.addJavascriptInterface(new SecureStorageBridge(), "AppForgeNativeStorage");
         web.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback,
@@ -114,6 +124,70 @@ public class MainActivity extends Activity {
                 value -> { if (value == null || value.contains("no")) finish(); });
         } else {
             super.onBackPressed();
+        }
+    }
+
+
+    /**
+     * Stockage des jetons AppForge chiffrés avec AES-256-GCM et une clé non exportable
+     * conservée dans Android Keystore. Les méthodes sont synchrones pour l'adaptateur WebView.
+     */
+    private class SecureStorageBridge {
+        private static final String PREFS = "mada_courses_cloud_secure_v1";
+        private static final String KEY_ALIAS = "mada_courses_cloud_aes_v1";
+
+        @JavascriptInterface
+        public String get(String name) {
+            try {
+                if (!validName(name)) return null;
+                String packed = getSharedPreferences(PREFS, MODE_PRIVATE).getString(name, null);
+                if (packed == null) return null;
+                String[] parts = packed.split(":", 2);
+                if (parts.length != 2) return null;
+                Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+                cipher.init(Cipher.DECRYPT_MODE, getSecretKey(),
+                    new GCMParameterSpec(128, Base64.decode(parts[0], Base64.NO_WRAP)));
+                return new String(cipher.doFinal(Base64.decode(parts[1], Base64.NO_WRAP)), StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @JavascriptInterface
+        public boolean set(String name, String value) {
+            try {
+                if (!validName(name) || value == null || value.length() > 1000000) return false;
+                Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+                cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
+                String packed = Base64.encodeToString(cipher.getIV(), Base64.NO_WRAP) + ":" +
+                    Base64.encodeToString(cipher.doFinal(value.getBytes(StandardCharsets.UTF_8)), Base64.NO_WRAP);
+                return getSharedPreferences(PREFS, MODE_PRIVATE).edit().putString(name, packed).commit();
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        @JavascriptInterface
+        public void remove(String name) {
+            if (validName(name)) getSharedPreferences(PREFS, MODE_PRIVATE).edit().remove(name).apply();
+        }
+
+        private boolean validName(String name) {
+            return name != null && name.length() > 0 && name.length() <= 120;
+        }
+
+        private SecretKey getSecretKey() throws Exception {
+            KeyStore store = KeyStore.getInstance("AndroidKeyStore");
+            store.load(null);
+            if (store.containsAlias(KEY_ALIAS)) return (SecretKey) store.getKey(KEY_ALIAS, null);
+            KeyGenerator generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+            generator.init(new KeyGenParameterSpec.Builder(KEY_ALIAS,
+                    KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setRandomizedEncryptionRequired(true)
+                .build());
+            return generator.generateKey();
         }
     }
 
