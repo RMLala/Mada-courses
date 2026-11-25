@@ -79,7 +79,7 @@ nav button{min-height:54px}
 <div id="menuShade" class="menu-shade" data-act="menuClose"></div><aside id="sideMenu" class="side-menu" aria-label="Navigation principale"><div class="menu-head"><b>MADA COURSES PRO</b><small>Votre gestion au quotidien</small></div><div id="sideLinks"></div></aside>
 <main id="app"></main>
 <nav id="nav"></nav>
-<div id="pinLock" class="pin-lock" hidden><div class="pin-box"><h2>Application verrouillée</h2><p class="muted">Saisis ton PIN pour continuer.</p><input id="unlockPin" type="password" inputmode="numeric" maxlength="8" placeholder="Code PIN"><button class="pri" id="unlockPinBtn">Déverrouiller</button><button id="unlockBioBtn" hidden onclick="AndroidBridge.authenticateBiometric()">Utiliser la biométrie</button><p id="pinError" class="warn"></p></div></div>
+<div id="pinLock" class="pin-lock" hidden><div class="pin-box"><h2>Application verrouillée</h2><p class="muted">Saisis ton PIN pour continuer.</p><input id="unlockPin" type="password" inputmode="numeric" maxlength="8" placeholder="Code PIN"><button class="pri" id="unlockPinBtn">Déverrouiller</button><button id="unlockBioBtn" hidden onclick="window.AndroidBridge&&window.AndroidBridge.authenticateBiometric&&window.AndroidBridge.authenticateBiometric()">Utiliser la biométrie</button><p id="pinError" class="warn"></p></div></div>
 <div id="toast" class="toast"></div>
 <datalist id="units"></datalist>
 <script>
@@ -455,7 +455,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{
   if(e.target.dataset&&e.target.dataset.set)setField(e.target);
   if(e.target.id==='pinEnabled'){if(e.target.checked&&!db.settings.pinHash){e.target.checked=false;toast('Crée d’abord un PIN.')}else{db.settings.pinEnabled=e.target.checked;save()}}
-  if(e.target.id==='biometricEnabled'){db.settings.biometricEnabled=e.target.checked;save()}
+  if(e.target.id==='biometricEnabled'){if(e.target.checked&&!db.settings.pinHash){e.target.checked=false;toast('Configure d’abord un PIN avant la biométrie.')}else{db.settings.biometricEnabled=e.target.checked;save()}}
   if(e.target.id==='brandPhotoInput'&&e.target.files[0])applyBrandPhoto(e.target.files[0]);
 });
 document.addEventListener('input',e=>{
