@@ -34,6 +34,17 @@ jobs:
           mkdir -p app/src/main/assets
           cp index.html app/src/main/assets/index.html
 
+      - name: Vérifier la syntaxe JavaScript embarquée
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const scripts = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/gi)];
+          if (!scripts.length) throw new Error('Aucun script inline trouvé');
+          scripts.forEach((m, i) => new Function(m[1]));
+          console.log('OK : syntaxe valide pour ' + scripts.length + ' script(s) inline');
+          NODE
+
       - name: Java 17
         uses: actions/setup-java@v4
         with:
