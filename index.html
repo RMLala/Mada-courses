@@ -72,6 +72,8 @@ nav button{min-height:54px}
 @media(min-width:700px){.side-menu{width:300px}main{padding-left:22px;padding-right:22px}}
 
 .product-line{display:grid;grid-template-columns:auto minmax(70px,1fr) repeat(2,minmax(62px,86px)) minmax(72px,92px) auto;gap:6px;align-items:end}.price-field{display:flex;flex-direction:column;gap:3px;min-width:0;color:var(--muted);font-size:10px}.price-field input{width:100%;min-width:0;padding:8px 6px;font-size:14px}.line-total{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}.line-total-wrap{grid-column:2/-2;text-align:right}.catalog-tools{display:grid;grid-template-columns:1fr minmax(120px,.7fr);gap:8px;margin-top:10px}.catalog-tools input,.catalog-tools select{width:100%;min-width:0}.product-admin{padding:6px 0;border-top:1px solid var(--line)}.product-admin .add{display:grid;grid-template-columns:1.2fr 1fr .7fr .8fr auto}.product-admin input,.product-admin select{width:100%;min-width:0}.brand-mark.has-photo{overflow:hidden}.brand-mark img{width:100%;height:100%;object-fit:cover}.pin-lock{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:20px}.pin-lock[hidden]{display:none}.pin-box{width:min(100%,360px);padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--card);display:grid;gap:12px}.pin-box input{width:100%;text-align:center;letter-spacing:.3em;font-size:22px}@media(max-width:480px){.product-line{grid-template-columns:auto minmax(65px,1fr) repeat(2,minmax(60px,1fr))}.product-line .line-total-wrap{grid-column:2/4;text-align:left}.product-admin .add{grid-template-columns:1fr 1fr}.catalog-tools{grid-template-columns:1fr}}
+
+.product-line{display:grid;grid-template-columns:auto minmax(70px,1fr) repeat(2,minmax(62px,86px)) minmax(72px,92px) auto;gap:6px;align-items:end}.price-field{display:flex;flex-direction:column;gap:3px;min-width:0;color:var(--muted);font-size:10px}.price-field input{width:100%;min-width:0;padding:8px 6px;font-size:14px}.line-total{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}.line-total-wrap{grid-column:2/-2;text-align:right}.catalog-tools{display:grid;grid-template-columns:1fr minmax(120px,.7fr);gap:8px;margin-top:10px}.catalog-tools input,.catalog-tools select{width:100%;min-width:0}.product-admin{padding:6px 0;border-top:1px solid var(--line)}.product-admin .add{display:grid;grid-template-columns:1.2fr 1fr .7fr .8fr auto}.product-admin input,.product-admin select{width:100%;min-width:0}@media(max-width:480px){.product-line{grid-template-columns:auto minmax(65px,1fr) repeat(2,minmax(60px,1fr))}.product-line .line-total-wrap{grid-column:2/4;text-align:left}.product-admin .add{grid-template-columns:1fr 1fr}.catalog-tools{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -147,18 +149,14 @@ function courseRow(c){
 }
 function courseCard(c){return `<div class="card" style="cursor:pointer" data-act="openCourse" data-id="${c.id}">${courseRow(c)}</div>`}
 function itemRow(i,kind,owner){
-  const dd=`data-kind="${kind}" data-owner="${owner}" data-iid="${i.id}"`;
-  const check=kind==='course'?`<input type="checkbox" ${i.bought?'checked':''} data-set="item" data-f="bought" ${dd} title="Acheté">`:'';
-  const price=kind==='course'?`<input class="p" type="number" step="any" min="0" placeholder="payé" value="${i.price??''}" data-set="item" data-f="price" ${dd}>`:'';
-  return `<div class="row">${check}<div class="grow"><b>${esc(i.name)}</b><div class="muted">${esc(i.cat)} · ${esc(i.unit)}</div></div>
-    <input class="q" type="number" step="any" min="0" value="${i.qty}" data-set="item" data-f="qty" ${dd} title="Quantité">
-    <input class="p" type="number" step="any" min="0" placeholder="prix estimé" value="${i.est}" data-set="item" data-f="est" ${dd} title="Prix estimé">
-    ${price}
-    <button class="sm dng" data-act="delItem" ${dd}>✕</button></div>`;
+ const dd=\`data-kind="\${kind}" data-owner="\${owner}" data-iid="\${i.id}"\`,check=kind==='course'?\`<input type="checkbox" \${i.bought?'checked':''} data-set="item" data-f="bought" \${dd}>\`:'';
+ const paid=kind==='course'?\`<label class="price-field"><small>PU payé</small><input class="p" type="number" min="0" step="any" value="\${i.price??''}" placeholder="PU payé" data-set="item" data-f="price" \${dd}></label>\`:'';
+ const total=kind==='course'?\`<span class="line-total" data-line-total="\${i.id}">\${money(i.bought&&i.price!=null?i.qty*i.price:0)}</span>\`:'';
+ return \`<div class="row product-line">\${check}<div class="grow"><b>\${esc(i.name)}</b><div class="muted">\${esc(i.cat)} · \${esc(i.unit)}</div></div><label class="price-field"><small>Qté</small><input class="q" type="number" min="0" step="any" value="\${i.qty}" data-set="item" data-f="qty" \${dd}></label><label class="price-field"><small>PU estimé</small><input class="p" type="number" min="0" step="any" value="\${i.est}" data-set="item" data-f="est" \${dd}></label>\${paid}<span class="line-total-wrap">\${total}</span><button class="sm dng" data-act="delItem" \${dd}>✕</button></div>\`;
 }
-function addForm(kind,id){return prodPicker()+addFormOld(kind,id)}
-function addFormOld(kind,id){
-  return `<div class="add"><input id="n_name" placeholder="Produit (ex. Riz)"><input id="n_qty" type="number" step="any" value="1" style="max-width:90px"><input id="n_unit" list="units" value="kg" style="max-width:110px"><input id="n_est" type="number" step="any" placeholder="Prix estimé"><select id="n_cat">${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><button class="pri" data-act="addItem" data-kind="${kind}" data-owner="${id}">Ajouter</button></div>`;
+function addForm(kind,id){
+ const opts=(db.products||[]).map(p=>\`<option value="\${esc(p.name)}"></option>\`).join('');
+ return \`<div class="product-add"><label class="lbl">Produit — rechercher dans le catalogue<input id="n_name" list="productNames" autocomplete="off" placeholder="Rechercher ou saisir un produit"><datalist id="productNames">\${opts}</datalist></label><div class="add"><label class="price-field"><small>Quantité</small><input id="n_qty" type="number" min="0.01" step="any" value="1"></label><label class="price-field"><small>Unité</small><input id="n_unit" list="units" value="kg"></label><label class="price-field"><small>PU estimé</small><input id="n_est" type="number" min="0" step="any" placeholder="Prix unitaire"></label><select id="n_cat">\${cats().map(c=>\`<option>\${esc(c)}</option>\`).join('')}</select><button class="pri" data-act="addItem" data-kind="\${kind}" data-owner="\${id}">Ajouter</button></div><p class="muted" id="productMatchHint">Le produit existant sera reconnu automatiquement.</p></div>\`;
 }
 function vAccueil(){
   const t=iso(),m=t.slice(0,7);
@@ -345,9 +343,17 @@ function reglagesExtra(){
   <div class='card'><h3>Affichage</h3><button data-act='toggleTheme'>Basculer clair / sombre</button></div>${cloudPanel()}`;
 }
 
-function prodPicker(){const ps=db.products||[];return ps.length?`<div class='lbl'>Choisir un produit enregistr\u00e9<select id='n_prod'><option value=''>\u2014 saisie libre \u2014</option>${ps.map(p=>`<option value='${p.id}'>${esc(p.name)} (${esc(p.unit)})</option>`).join('')}</select></div>`:''}
-function prodManager(){return `<div class='card'><h3>Mes produits</h3><p class='muted'>Cr\u00e9ez vos produits une fois, puis s\u00e9lectionnez-les dans les mod\u00e8les et les courses.</p><div class='add'><input id='pr_n' placeholder='Nom du produit'><select id='pr_c'>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><input id='pr_u' list='units' value='kg' style='max-width:110px'><input id='pr_p' type='number' step='any' min='0' placeholder='Prix de r\u00e9f\u00e9rence' style='max-width:150px'><button class='pri' data-act='addProd'>Cr\u00e9er</button></div>${(db.products||[]).map(p=>`<div class='row'><div class='grow'><b>${esc(p.name)}</b> <span class='muted'>${esc(p.unit)} \u00b7 r\u00e9f. ${money(p.ref)}</span><div class='lbl' style='margin:4px 0 0'><select data-set='prod' data-f='cat' data-owner='${p.id}'>${cats().map(c=>`<option ${c===p.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></div></div><button class='sm dng' data-act='delProd' data-id='${p.id}'>\u2715</button></div>`).join('')||`<div class='empty'>Aucun produit pour le moment.</div>`}</div>`}
-
+function prodManager(){
+ const products=db.products||[],q=(ui.productQ||'').toLocaleLowerCase('fr').trim(),sort=ui.productSort||'name';
+ const list=products.filter(p=>!q||[p.name,p.cat,p.unit].join(' ').toLocaleLowerCase('fr').includes(q)).sort((a,b)=>sort==='price'?(Number(b.ref)||0)-(Number(a.ref)||0):sort==='category'?String(a.cat).localeCompare(String(b.cat),'fr'):a.name.localeCompare(b.name,'fr'));
+ return \`<div class="card"><h3>Mes produits</h3><p class="muted">Catalogue réutilisable, modifiable directement, avec recherche et tri.</p><div class="add"><input id="pr_n" placeholder="Nom du produit"><select id="pr_c">\${cats().map(c=>\`<option>\${esc(c)}</option>\`).join('')}</select><input id="pr_u" list="units" value="kg" placeholder="Unité"><input id="pr_p" type="number" min="0" step="any" placeholder="Prix de référence"><button class="pri" data-act="addProd">Créer</button></div><div class="catalog-tools"><input value="\${esc(ui.productQ||'')}" data-set="productQ" placeholder="Rechercher nom, catégorie…"><select data-set="productSort"><option value="name" \${sort==='name'?'selected':''}>Tri : nom</option><option value="category" \${sort==='category'?'selected':''}>Tri : catégorie</option><option value="price" \${sort==='price'?'selected':''}>Tri : prix décroissant</option></select></div><p class="muted">\${list.length} / \${products.length} produit(s)</p>\${list.map(p=>\`<div class="product-admin"><div class="add"><input aria-label="Nom" value="\${esc(p.name)}" data-set="prod" data-f="name" data-owner="\${p.id}"><select aria-label="Catégorie" data-set="prod" data-f="cat" data-owner="\${p.id}">\${cats().map(c=>\`<option \${c===p.cat?'selected':''}>\${esc(c)}</option>\`).join('')}</select><input aria-label="Unité" value="\${esc(p.unit)}" data-set="prod" data-f="unit" data-owner="\${p.id}"><input aria-label="Prix de référence" type="number" min="0" step="any" value="\${Number(p.ref)||0}" data-set="prod" data-f="ref" data-owner="\${p.id}"><button class="sm dng" data-act="delProd" data-id="\${p.id}">Supprimer</button></div></div>\`).join('')||'<div class="empty">Aucun produit correspondant.</div>'}</div>\`;
+}
+function vCatalogue(){
+ const L=lines(db.courses).sort((a,b)=>b.c.date.localeCompare(a.c.date)),P={};
+ L.forEach(x=>{const k=x.i.name.trim().toLowerCase()+'|'+x.i.unit,p=P[k]||(P[k]={n:x.i.name,unit:x.i.unit,cat:x.i.cat,last:null,lastDate:'',sum:0,q:0,min:Infinity,max:0,place:'',count:0});p.count++;(p.hist=p.hist||[]).push([x.c.date,x.i.price]);p.sum+=x.i.qty*x.i.price;p.q+=x.i.qty;p.min=Math.min(p.min,x.i.price);p.max=Math.max(p.max,x.i.price);if(!p.last){p.last=x.i.price;p.lastDate=x.c.date;p.place=PLACES[x.c.place]+(x.c.lieu?' — '+x.c.lieu:'')}});
+ const q=ui.catQ.trim().toLowerCase(),list=Object.values(P).filter(p=>!q||p.n.toLowerCase().includes(q)).sort((a,b)=>a.n.localeCompare(b.n));
+ return \`\${prodManager()}<div class="card"><label class="lbl">Filtrer l'historique<input value="\${esc(ui.catQ)}" placeholder="ex. riz" data-set="cq"></label><p class="muted">Prix issus des achats réellement payés.</p></div>\${list.map(p=>\`<div class="card"><b>\${esc(p.n)}</b> <span class="muted">· \${esc(p.unit)} · \${esc(p.cat)}</span><div class="kpis" style="margin-top:8px">\${kpi('Dernier prix payé',money(p.last)+' ('+fdate(p.lastDate)+')')}\${kpi('Prix moyen pondéré',money(p.q?p.sum/p.q:0))}\${kpi('Min / max',money(p.min)+' / '+money(p.max))}\${kpi('Achats',p.count+' · '+esc(p.place))}</div><div class="muted" style="margin-top:6px">Historique : \${p.hist.slice(0,6).map(h=>fdate(h[0])+' : '+money(h[1])).join(' · ')}</div></div>\`).join('')||'<div class="card empty">Aucun produit acheté.</div>'}\`;
+}
 function rateOf(s){const h=(s.hist||[]).slice().sort((a,b)=>a[0].localeCompare(b[0]));if(h.length<2)return 0;const days=(Date.parse(h[h.length-1][0])-Date.parse(h[0][0]))/864e5;if(days<=0)return 0;return h.slice(0,-1).reduce((t,x)=>t+x[1],0)/days}
 /* ---------- actions ---------- */
 function act(a,d){
@@ -376,8 +382,8 @@ function act(a,d){
     case 'addItem': {
       const name=$('#n_name').value.trim();
       if(!name){toast('Indiquez le nom du produit');break}
-      const o=owner(d.kind,d.owner);
-      if(o)o.items.push({id:uid(),pid:($('#n_prod')&&$('#n_prod').value)||null,name,qty:num($('#n_qty').value)||1,unit:$('#n_unit').value.trim()||'pièce',est:num($('#n_est').value),cat:$('#n_cat').value,price:null,bought:false});
+      const o=owner(d.kind,d.owner),match=(db.products||[]).find(p=>p.name.trim().toLocaleLowerCase('fr')===name.toLocaleLowerCase('fr'));
+      if(o)o.items.push({id:uid(),pid:match?.id||null,name:match?.name||name,qty:num($('#n_qty').value)||1,unit:match?.unit||$('#n_unit').value.trim()||'pièce',est:match?Number(match.ref)||0:num($('#n_est').value),cat:match?.cat||$('#n_cat').value,price:null,bought:false});
       break;
     }
     case 'newModel': {const m={id:uid(),name:'Nouveau modèle',kind:'autre',notes:'',items:[]};db.models.push(m);ui.tab='modeles';ui.modelId=m.id;break}
@@ -403,8 +409,7 @@ bought.forEach(i=>{let s=db.stocks.find(x=>x.name.trim().toLowerCase()===i.name.
     case 'addShop': {const n=$('#sh_n').value.trim();if(!n){toast('Nom du magasin requis');break}db.shops.push({id:uid(),name:n,address:$('#sh_a').value.trim(),type:$('#sh_t').value,contact:$('#sh_c').value.trim(),notes:$('#sh_o').value.trim()});break}
     case 'delShop': if(sure('ds'+d.id)){db.shops=db.shops.filter(x=>x.id!==d.id)}break;
     case 'toggleTheme': document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';break;
-    case 'addProd': {const n=$('#pr_n').value.trim();if(!n){toast('Nom du produit requis');break}db.products=[...(db.products||[]),{id:uid(),name:n,cat:$('#pr_c').value,unit:$('#pr_u').value.trim()||'pièce',ref:num($('#pr_p').value)}];toast('Produit cr\u00e9\u00e9');break}
-    case 'delProd': if(sure('dp'+d.id)){db.products=db.products.filter(x=>x.id!==d.id);toast('Produit supprim\u00e9')}break;
+    case 'addProd': {const n=$('#pr_n').value.trim();if(!n){toast('Nom du produit requis');break}if((db.products||[]).some(p=>p.name.trim().toLocaleLowerCase('fr')===n.toLocaleLowerCase('fr'))){toast('Ce produit existe déjà. Modifie sa fiche dans la liste.');break}db.products=[...(db.products||[]),{id:uid(),name:n,cat:$('#pr_c').value,unit:$('#pr_u').value.trim()||'pièce',ref:num($('#pr_p').value)}];toast('Produit créé');break;}
     case 'resetAll': if(sure('reset')){db=seed();ui.courseId=null;ui.modelId=null;ui.updFor=null;toast('Toutes les données ont été effacées')}break;
     case 'loadDemo': if(sure('demo')){db=demo();ui.courseId=null;ui.modelId=null;ui.updFor=null;toast('Données de démo chargées')}break;
     case 'pickUpd': ui.updFor=d.id;break;
@@ -428,7 +433,9 @@ function setField(el){
   }
   else if(d.set==='course'||d.set==='model'){const o=owner(d.set,d.owner);if(o)o[d.f]=v}
   else if(d.set==='addModel'){const m=db.models.find(x=>x.id===v),c=owner('course',d.owner);if(m&&c)c.items.push(...strip(m.items));if(m)toast('Produits ajoutés')}
-  else if(d.set==='prod'){const pr=(db.products||[]).find(x=>x.id===d.owner);if(pr)pr[d.f]=v}
+  else if(d.set==='prod'){const pr=(db.products||[]).find(x=>x.id===d.owner);if(pr)pr[d.f]=d.f==='ref'?num(v):v}
+  else if(d.set==='productQ'){ui.productQ=v}
+  else if(d.set==='productSort'){ui.productSort=v}
   else if(d.set==='cq'){ui.catQ=v}
   else if(d.set==='rpt'){ui.rpt[d.f]=v}
   else if(d.set==='filter'){ui.filter[d.f]=v}
