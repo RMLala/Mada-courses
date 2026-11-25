@@ -39,7 +39,7 @@ jobs:
           node - <<'NODE'
           const fs = require('fs');
           const html = fs.readFileSync('index.html', 'utf8');
-          const scripts = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/gi)];
+          const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)];
           if (!scripts.length) throw new Error('Aucun script inline trouvé');
           scripts.forEach((m, i) => new Function(m[1]));
           console.log('OK : syntaxe valide pour ' + scripts.length + ' script(s) inline');
