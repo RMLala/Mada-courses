@@ -445,10 +445,15 @@ function render(){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.tab));
   document.querySelectorAll('.side-link').forEach(b=>b.classList.toggle('active',b.dataset.v===ui.tab));
   const V={accueil:vAccueil,courses:vCourses,modeles:vModeles,historique:vHistorique,budget:vBudget,stocks:vStocks,catalogue:vCatalogue,rapports:vRapports,reglages:vReglages};
-  $('#app').innerHTML=bannerBackup()+V[ui.tab]();
-  // Le panneau Réglages est injecté dynamiquement : actualiser son état natif après rendu.
-  if(ui.tab==='reglages')madaCloudRenderSecureLabel();
-  applyBranding();
+  try{
+    if(typeof V[ui.tab]!=='function')throw new Error('Vue inconnue : '+ui.tab);
+    $('#app').innerHTML=bannerBackup()+V[ui.tab]();
+    if(ui.tab==='reglages')madaCloudRenderSecureLabel();
+    applyBranding();
+  }catch(error){
+    console.error('Mada Courses render error',error);
+    $('#app').innerHTML='<div class="card warn"><h2>Erreur d’affichage</h2><p>La vue « '+esc(ui.tab)+' » n’a pas pu être affichée.</p><p class="muted">'+esc(error?.message||String(error))+'</p><button class="pri" data-act="tab" data-v="accueil">Retour Accueil</button><button data-act="tab" data-v="reglages">Réglages</button></div>';
+  }
 }
 
 /* ---------- événements ---------- */
