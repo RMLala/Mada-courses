@@ -55,6 +55,20 @@ jobs:
           jq -e '.ok == true' /tmp/health.json >/dev/null
           curl --fail --silent --show-error "$WORKER_URL/v1/config" | jq -e '.protocol == "appforge-license-v1"' >/dev/null
 
+      - name: Tester l'essai MADACOURSES et l'accès Cloud avec un appareil de test isolé
+        shell: bash
+        run: |
+          set -euo pipefail
+          TEST_INSTALLATION_ID="00000000-0000-4000-8000-00000000a202"
+          trial=$(curl --silent --show-error --fail -X POST "$WORKER_URL/v1/trial" -H "Content-Type: application/json" -d "{\"productId\":\"MADACOURSES\",\"installationId\":\"$TEST_INSTALLATION_ID\"}")
+          echo "$trial" | jq -e '.token and .cloudAccess.token and .expiresAt' >/dev/null || { echo "::error::Essai MADACOURSES ou jeton Cloud non délivré"; exit 1; }
+          token=$(echo "$trial" | jq -r '.token')
+          status=$(curl --silent --show-error --fail -X POST "$WORKER_URL/v1/status" -H "Content-Type: application/json" -d "{\"productId\":\"MADACOURSES\",\"token\":\"$token\",\"installationId\":\"$TEST_INSTALLATION_ID\"}")
+          echo "$status" | jq -e '.active == true' >/dev/null || { echo "::error::Essai de test délivré mais statut inactif"; exit 1; }
+          cloud=$(echo "$trial" | jq -r '.cloudAccess.token')
+          curl --silent --show-error --fail "$WORKER_URL/v1/cloud/snapshot?resource=default" -H "Authorization: Bearer $cloud" | jq -e '.snapshot == null or .snapshot != null' >/dev/null
+          echo "Essai MADACOURSES et accès Cloud test confirmés (installation de test isolée)."
+
       - name: Vérifier le refus d'accès R2 sans jeton
         shell: bash
         run: |
