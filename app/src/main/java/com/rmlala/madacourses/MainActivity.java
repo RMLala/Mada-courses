@@ -17,6 +17,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 import androidx.biometric.BiometricPrompt;
+import androidx.fragment.app.FragmentActivity;
 import androidx.core.content.ContextCompat;
 import java.util.concurrent.Executor;
 import android.security.keystore.KeyGenParameterSpec;
@@ -38,7 +39,7 @@ import java.io.OutputStream;
  * dans une WebView. Les exports (fichiers blob) passent par un pont natif, car une
  * WebView ne sait pas enregistrer seule les téléchargements de type blob.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
     private WebView web;
     private ValueCallback<Uri[]> filePathCallback;
