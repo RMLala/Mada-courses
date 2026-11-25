@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity {
      * Stockage des jetons AppForge chiffrés avec AES-256-GCM et une clé non exportable
      * conservée dans Android Keystore. Les méthodes sont synchrones pour l'adaptateur WebView.
      */
-    private class SecureStorageBridge {
+    public class SecureStorageBridge {
         private static final String PREFS = "mada_courses_cloud_secure_v1";
         private static final String KEY_ALIAS = "mada_courses_cloud_aes_v1";
 
