@@ -16,6 +16,9 @@ import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
+import java.util.concurrent.Executor;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
@@ -201,6 +204,37 @@ public class MainActivity extends Activity {
 
     /** Méthodes appelées depuis le JavaScript de la page. */
     public class Bridge {
+        @JavascriptInterface
+        public void authenticateBiometric() {
+            runOnUiThread(() -> {
+                try {
+                    Executor executor = ContextCompat.getMainExecutor(MainActivity.this);
+                    BiometricPrompt prompt = new BiometricPrompt(MainActivity.this, executor,
+                        new BiometricPrompt.AuthenticationCallback() {
+                            @Override public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                                web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(true)", null);
+                            }
+                            @Override public void onAuthenticationError(int code, CharSequence message) {
+                                web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false)", null);
+                                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                            @Override public void onAuthenticationFailed() {
+                                web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false)", null);
+                            }
+                        });
+                    BiometricPrompt.PromptInfo info = new BiometricPrompt.PromptInfo.Builder()
+                        .setTitle("Déverrouiller Mada Courses")
+                        .setSubtitle("Confirme ton identité")
+                        .setNegativeButtonText("Annuler")
+                        .build();
+                    prompt.authenticate(info);
+                } catch (Exception error) {
+                    web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false)", null);
+                    Toast.makeText(MainActivity.this, "Biométrie indisponible sur cet appareil", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
         @JavascriptInterface
         public void save(String name, String base64, String mime) {
             try {
