@@ -32,7 +32,12 @@ import javax.crypto.spec.GCMParameterSpec;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;\nimport java.io.InputStream;\nimport java.io.ByteArrayOutputStream;\nimport java.net.URL;\nimport java.net.HttpURLConnection;\nimport org.json.JSONObject;
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import org.json.JSONObject;
 
 /**
  * Affiche l'application MADA COURSES PRO (index.html, copié dans les assets au build)
