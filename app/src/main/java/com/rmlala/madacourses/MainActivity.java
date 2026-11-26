@@ -214,8 +214,70 @@ public class MainActivity extends FragmentActivity {
     }
 
     /** Méthodes appelées depuis le JavaScript de la page. */
-    public class Bridge {\n        @JavascriptInterface\n        public String requestNetwork(String urlText, String method, String headersJson, String body) {\n            HttpURLConnection conn = null;\n            try {\n                Uri uri = Uri.parse(urlText);\n                if (!\"https\".equalsIgnoreCase(uri.getScheme()) || !\"appforge-license-api.lalainaadclick.workers.dev\".equalsIgnoreCase(uri.getHost()) || !uri.getPath().startsWith(\"/v1/\")) {\n                    return new JSONObject().put(\"ok\", false).put(\"error\", \"URL réseau non autorisée\").toString();\n                }\n                String verb = (method == null || method.isEmpty()) ? \"GET\" : method.toUpperCase();\n                if (!(verb.equals(\"GET\") || verb.equals(\"POST\") || verb.equals(\"PUT\") || verb.equals(\"DELETE\"))) {\n                    return new JSONObject().put(\"ok\", false).put(\"error\", \"Méthode réseau non autorisée\").toString();\n                }\n                conn = (HttpURLConnection) new URL(urlText).openConnection();\n                conn.setRequestMethod(verb); conn.setConnectTimeout(15000); conn.setReadTimeout(20000); conn.setInstanceFollowRedirects(false);\n                JSONObject headers = new JSONObject(headersJson == null ? \"{}\" : headersJson);\n                java.util.Iterator<String> keys = headers.keys();\n                while (keys.hasNext()) { String key = keys.next(); String value = headers.optString(key, \"\"); if (!key.equalsIgnoreCase(\"Host\") && !key.equalsIgnoreCase(\"Content-Length\")) conn.setRequestProperty(key, value); }\n                if ((verb.equals(\"POST\") || verb.equals(\"PUT\")) && body != null && !body.isEmpty()) { conn.setDoOutput(true); byte[] bytes=body.getBytes(\"UTF-8\"); conn.setRequestProperty(\"Content-Length\", String.valueOf(bytes.length)); try(OutputStream os=conn.getOutputStream()){os.write(bytes);} }\n                int status=conn.getResponseCode(); InputStream stream=(status>=400)?conn.getErrorStream():conn.getInputStream(); String text=\"\"; if(stream!=null){try(InputStream is=stream;ByteArrayOutputStream out=new ByteArrayOutputStream()){byte[] buf=new byte[4096];int n;while((n=is.read(buf))!=-1){out.write(buf,0,n);}text=new String(out.toByteArray(),\"UTF-8\");}}\n                JSONObject payload; try{payload=new JSONObject(text);}catch(Exception parse){payload=new JSONObject().put(\"raw\",text);}\n                return new JSONObject().put(\"ok\",true).put(\"status\",status).put(\"contentType\",conn.getContentType()).put(\"body\",payload).toString();\n            } catch(Exception ex) { try{return new JSONObject().put(\"ok\",false).put(\"error\",\"Erreur réseau native (\"+ex.getClass().getSimpleName()+\"): \"+(ex.getMessage()==null?\"sans détail\":ex.getMessage())).toString();}catch(Exception ignored){return \"{\\\"ok\\\":false,\\\"error\\\":\\\"Transport Android indisponible\\\"}\";} }\n            finally { if(conn!=null)conn.disconnect(); }\n        }\n
+    public class Bridge {
         @JavascriptInterface
+        public String requestNetwork(String urlText, String method, String headersJson, String body) {
+            HttpURLConnection conn = null;
+            try {
+                Uri uri = Uri.parse(urlText);
+                if (!"https".equalsIgnoreCase(uri.getScheme())
+                        || !"appforge-license-api.lalainaadclick.workers.dev".equalsIgnoreCase(uri.getHost())
+                        || uri.getPath() == null || !uri.getPath().startsWith("/v1/")) {
+                    return new JSONObject().put("ok", false).put("error", "URL réseau non autorisée").toString();
+                }
+                String verb = (method == null || method.isEmpty()) ? "GET" : method.toUpperCase();
+                if (!(verb.equals("GET") || verb.equals("POST") || verb.equals("PUT") || verb.equals("DELETE"))) {
+                    return new JSONObject().put("ok", false).put("error", "Méthode réseau non autorisée").toString();
+                }
+                conn = (HttpURLConnection) new URL(urlText).openConnection();
+                conn.setRequestMethod(verb);
+                conn.setConnectTimeout(15000);
+                conn.setReadTimeout(20000);
+                conn.setInstanceFollowRedirects(false);
+                JSONObject headers = new JSONObject(headersJson == null ? "{}" : headersJson);
+                java.util.Iterator<String> keys = headers.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String value = headers.optString(key, "");
+                    if (!key.equalsIgnoreCase("Host") && !key.equalsIgnoreCase("Content-Length")) {
+                        conn.setRequestProperty(key, value);
+                    }
+                }
+                if ((verb.equals("POST") || verb.equals("PUT")) && body != null && !body.isEmpty()) {
+                    conn.setDoOutput(true);
+                    byte[] bytes = body.getBytes("UTF-8");
+                    conn.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+                    try (OutputStream os = conn.getOutputStream()) { os.write(bytes); }
+                }
+                int status = conn.getResponseCode();
+                InputStream stream = (status >= 400) ? conn.getErrorStream() : conn.getInputStream();
+                String text = "";
+                if (stream != null) {
+                    try (InputStream is = stream; ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                        byte[] buf = new byte[4096];
+                        int n;
+                        while ((n = is.read(buf)) != -1) out.write(buf, 0, n);
+                        text = new String(out.toByteArray(), "UTF-8");
+                    }
+                }
+                JSONObject payload;
+                try { payload = new JSONObject(text); }
+                catch (Exception parse) { payload = new JSONObject().put("raw", text); }
+                return new JSONObject().put("ok", true).put("status", status)
+                        .put("contentType", conn.getContentType()).put("body", payload).toString();
+            } catch (Exception ex) {
+                try {
+                    return new JSONObject().put("ok", false)
+                            .put("error", "Erreur réseau native (" + ex.getClass().getSimpleName() + "): "
+                                    + (ex.getMessage() == null ? "sans détail" : ex.getMessage())).toString();
+                } catch (Exception ignored) {
+                    return "{\"ok\":false,\"error\":\"Transport Android indisponible\"}";
+                }
+            } finally {
+                if (conn != null) conn.disconnect();
+            }
+        }
+
         public void authenticateBiometric() {
             runOnUiThread(() -> {
                 try {
