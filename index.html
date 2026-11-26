@@ -134,7 +134,51 @@ nav button.on{font-weight:800}
  .catalog-tools{grid-template-columns:1fr}
  header .menu-trigger,header .header-settings{width:40px;height:40px}
 }
-.kpi-link{cursor:pointer;transition:transform .12s,box-shadow .12s}.kpi-link:active{transform:scale(.985)}.kpi-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}</style>
+.kpi-link{cursor:pointer;transition:transform .12s,box-shadow .12s}.kpi-link:active{transform:scale(.985)}.kpi-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* 1.6.1 corrective premium layout */
+.product-line{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"heading total" "fields fields" "remove remove";align-items:center;gap:8px 10px;padding:13px 12px!important;margin:10px 0;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 3px 14px rgba(15,40,25,.045)}
+.product-line>.grow{grid-area:heading;min-width:0;display:flex;flex-direction:column;gap:2px}
+.product-line>.grow b{font-size:16px;line-height:1.25;overflow-wrap:anywhere}
+.product-line .line-total-wrap{grid-area:total;align-self:center;justify-self:end;text-align:right;min-width:max-content}
+.product-line .line-total{font-size:15px;font-weight:800;white-space:nowrap}
+.product-line>.price-field{min-width:0}
+.product-line>.price-field:nth-of-type(1){grid-area:fields;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.product-line>.price-field:nth-of-type(1) small{display:none}
+.product-line>.price-field:nth-of-type(1) input{min-width:0;width:100%;height:42px;padding:7px 9px;font-size:14px}
+.product-line>input[type=checkbox]{grid-area:heading;position:absolute;left:0;top:13px;width:21px;height:21px;opacity:0;pointer-events:none}
+.product-line>.grow{padding-left:0}
+.product-line>.grow b{padding-left:0}
+.product-line>button.dng{grid-area:remove;justify-self:end;width:auto;min-width:38px;height:32px;padding:3px 10px;margin-top:-2px;border-radius:10px}
+.product-line .price-field{font-size:11px;font-weight:700}
+.product-line .price-field:has(input[data-f=qty]){grid-area:fields}
+.product-line .price-field:has(input[data-f=est]){grid-area:fields}
+.product-line .price-field:has(input[data-f=price]){grid-area:fields}
+.product-line{grid-template-areas:"heading total" "fields fields" "remove remove"}
+.product-line .fields-row{grid-area:fields;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.product-line .fields-row label{min-width:0}
+.product-line .fields-row input{width:100%;min-width:0;height:42px;padding:7px 9px;font-size:14px}
+.product-line .fields-row small{display:block;color:var(--muted);font-size:10px;margin-bottom:3px}
+.product-line .fields-row .price-field{display:block}
+.product-line .fields-row .line-total-wrap{display:none}
+.product-line .check-title{grid-area:heading;display:flex;align-items:flex-start;gap:8px;min-width:0}
+.product-line .check-title input{flex:0 0 20px;width:20px;height:20px;opacity:1;position:static;pointer-events:auto;margin:2px 0 0;accent-color:var(--accent)}
+.product-line .check-title .grow{padding:0}
+.product-line .fields-row{grid-area:fields}
+.product-line .line-total-wrap{grid-area:total}
+@media(min-width:600px){.product-line{grid-template-columns:minmax(0,1fr) auto;max-width:100%}.product-line .fields-row{max-width:540px}}
+@media(max-width:380px){.product-line .fields-row{gap:5px}.product-line .fields-row input{padding:6px;font-size:13px}.product-line>.grow b{font-size:15px}}
+/* Theme palette options, selected by persistent app setting */
+:root[data-theme="light"]{--bg:#f4f7f4;--card:#fff;--text:#1c2922;--muted:#65736a;--accent:#14835a;--soft:#e3f4eb;--danger:#c43f45;--line:#dce5de;--warn:#a86c13}
+:root[data-theme="dark"]{--bg:#101512;--card:#1b241e;--text:#e9f1eb;--muted:#a0b0a5;--accent:#55d49b;--soft:#203d2c;--danger:#ff7b80;--line:#344239;--warn:#ffc36b;color-scheme:dark}
+:root[data-theme="forest"]{--bg:#eef5f0;--card:#fbfefc;--text:#1d3227;--muted:#657d6c;--accent:#267348;--soft:#dceee0;--danger:#bc4646;--line:#cbded0;--warn:#a76b18;color-scheme:light}
+:root[data-theme="royal"]{--bg:#f2f3fb;--card:#fff;--text:#252b43;--muted:#6c7189;--accent:#5869c8;--soft:#e7e9fb;--danger:#cb4c65;--line:#d9dcef;--warn:#a66d20;color-scheme:light}
+:root[data-theme="rose"]{--bg:#faf2f4;--card:#fff;--text:#392a32;--muted:#80717a;--accent:#b65377;--soft:#f5e1e9;--danger:#c73d4e;--line:#e9d6df;--warn:#a56d22;color-scheme:light}
+:root[data-theme="auto"]{color-scheme:light}
+@media(prefers-color-scheme:dark){:root[data-theme="auto"]{--bg:#111513;--card:#1a201c;--text:#e6ebe7;--muted:#97a39b;--accent:#3fc08a;--soft:#1f3a2c;--danger:#ff7070;--line:#2a332d;--warn:#f0ad4e;color-scheme:dark}}
+.theme-choice{min-width:72px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 7px;border-radius:13px}
+.theme-choice.active{outline:2px solid var(--accent);outline-offset:1px;background:var(--soft)}
+.theme-swatch{width:28px;height:28px;border-radius:50%;border:2px solid var(--line)}
+</style>
 </head>
 <body>
 <header class="app-header"><button class="menu-trigger" type="button" aria-label="Ouvrir le menu" data-act="menuToggle">☰</button><div class="brand-mark" id="brandMark">🛒</div><div class="brand-copy"><h1 id="brandTitle">MADA COURSES</h1><small>Gestion du foyer · Premium</small></div><button class="header-settings" type="button" aria-label="Réglages" data-act="tab" data-v="reglages">⚙</button></header>
@@ -209,10 +253,11 @@ function courseRow(c){
 }
 function courseCard(c){return `<div class="card" style="cursor:pointer" data-act="openCourse" data-id="${c.id}">${courseRow(c)}</div>`}
 function itemRow(i,kind,owner){
- const dd=`data-kind="${kind}" data-owner="${owner}" data-iid="${i.id}"`,check=kind==='course'?`<input type="checkbox" ${i.bought?'checked':''} data-set="item" data-f="bought" ${dd}>`:'';
- const paid=kind==='course'?`<label class="price-field"><small>PU payé</small><input class="p" type="number" min="0" step="any" value="${i.price??''}" placeholder="PU payé" data-set="item" data-f="price" ${dd}></label>`:'';
+ const dd=`data-kind="${kind}" data-owner="${owner}" data-iid="${i.id}"`;
+ const check=kind==='course'?`<input type="checkbox" ${i.bought?'checked':''} data-set="item" data-f="bought" ${dd}>`:'';
  const total=kind==='course'?`<span class="line-total" data-line-total="${i.id}">${money(i.bought&&i.price!=null?i.qty*i.price:0)}</span>`:'';
- return `<div class="row product-line">${check}<div class="grow"><b>${esc(i.name)}</b><div class="muted">${esc(i.cat)} · ${esc(i.unit)}</div></div><label class="price-field"><small>Qté</small><input class="q" type="number" min="0" step="any" value="${i.qty}" data-set="item" data-f="qty" ${dd}></label><label class="price-field"><small>PU estimé</small><input class="p" type="number" min="0" step="any" value="${i.est}" data-set="item" data-f="est" ${dd}></label>${paid}<span class="line-total-wrap">${total}</span><button class="sm dng" data-act="delItem" ${dd}>✕</button></div>`;
+ const fields=`<div class="fields-row"><label class="price-field"><small>Qté · ${esc(i.unit)}</small><input class="q" type="number" min="0" step="any" value="${i.qty}" data-set="item" data-f="qty" ${dd}></label><label class="price-field"><small>PU estimé</small><input class="p" type="number" min="0" step="any" value="${i.est}" data-set="item" data-f="est" ${dd}></label>${kind==='course'? `<label class="price-field"><small>PU payé</small><input class="p" type="number" min="0" step="any" value="${i.price??''}" placeholder="—" data-set="item" data-f="price" ${dd}></label>`:''}</div>`;
+ return `<div class="product-line"><div class="check-title">${check}<div class="grow"><b>${esc(i.name)}</b><div class="muted">${esc(i.cat)} · ${esc(i.unit)}</div></div></div><span class="line-total-wrap">${total}</span>${fields}<button class="sm dng" aria-label="Supprimer ${esc(i.name)}" data-act="delItem" ${dd}>✕ Supprimer</button></div>`;
 }
 function addForm(kind,id){
  const opts=(db.products||[]).map(p=>`<option value="${esc(p.name)}"></option>`).join('');
@@ -379,16 +424,16 @@ function vGuide(){
  <h3>3. Pendant les achats</h3><p>Cochez un produit lorsque vous l'avez acheté, puis saisissez le <b>prix unitaire réellement payé</b>. Le montant payé par ligne et les KPI de course se mettent à jour. Le prix payé est distinct du prix estimé.</p>
  <h3>4. Valider et analyser</h3><p>Validez la course quand elle est terminée. Les vues <b>Historique</b> et <b>Rapports</b> permettent de revoir les achats, filtrer une période, comparer les dépenses et repérer les catégories et produits coûteux.</p>
  <h3>5. Modèles et catalogue</h3><p>Les <b>Modèles</b> réutilisent une liste de produits pour les courses récurrentes. Le <b>Catalogue</b> mémorise les produits, unités, catégories et prix de référence. Les prix historiques proviennent des achats saisis.</p>
- <h3>6. Stocks</h3><p>Enregistrez les produits suivis, leurs quantités, seuils minimum, entrées et sorties. Les alertes de stock faible vous aident à préparer les prochaines courses.</p>
+ <h3>6. Stocks</h3><p>Enregistrez les produits suivis, leurs quantités, seuils minimum, entrées et sorties. Lorsqu’un article suivi dans le stock est marqué acheté dans une course, sa quantité est automatiquement déduite du stock et comptabilisée en sortie. Si vous décochez l’achat ou corrigez la quantité, l’écart est recalculé. La correspondance se fait sur le nom et l’unité du produit.</p>
  <h3>7. Sauvegarder / restaurer</h3><p>Dans <b>Réglages → Sauvegarde et restauration</b>, exportez un fichier JSON avant un changement d'appareil. Pour restaurer, choisissez le fichier JSON de sauvegarde. La restauration remplace les données présentes : faites une sauvegarde préalable.</p>
  <h3>8. Licence et Cloud</h3><p>Dans <b>Réglages → AppForge V3 / Licence & Cloud</b>, démarrez l'essai ou saisissez votre code de licence. L'accès Cloud est conditionné par un statut de licence/essai actif. Le stockage Android sécurisé est utilisé lorsque disponible; en HTML seul, les jetons sont conservés dans le stockage local du navigateur.</p>
  <h3>9. Confidentialité et sécurité</h3><p>Les données de gestion restent locales par défaut. Activez un PIN depuis Réglages si vous souhaitez verrouiller l'accès à l'application. La biométrie dépend de la prise en charge Android.</p>
  <div class="actions"><button class="pri" data-act="tab" data-v="accueil">Retour à l'accueil</button><button data-act="tab" data-v="reglages">Ouvrir les réglages</button></div></section>
- <section class="card"><h2>ℹ️ Application & licence</h2><div class="kpis">${kpi('Application','Mada Courses')}${kpi('Version','1.6.0 Premium UI')}${kpi('Android','API 23+ · Android 6.0+')}${kpi('Licence','Essai 72 h / licence AppForge')}</div><p class="muted">Les fonctions Cloud nécessitent un essai ou une licence valide. Une licence n'est pas confirmée simplement par l'installation de l'application. Consultez la section Licence & Cloud dans Réglages pour vérifier l'état réel.</p></section>`;
+ <section class="card"><h2>ℹ️ Application & licence</h2><div class="kpis">${kpi('Application','Mada Courses')}${kpi('Version','1.6.0 Premium UI')}${kpi('Android','API 23+ · Android 6.0+ (variante API23 et API29)')}${kpi('Licence','Essai 72 h / licence AppForge')}</div><p class="muted">Les fonctions Cloud nécessitent un essai ou une licence valide. Une licence n'est pas confirmée simplement par l'installation de l'application. Consultez la section Licence & Cloud dans Réglages pour vérifier l'état réel.</p></section>`;
 }
 function vReglages(){
  const appName=db.settings.appName||'MADA COURSES';
- return `<h2>Réglages</h2>
+ return `<h2>Réglages</h2><div class="card"><h3>🎨 Thèmes premium</h3><p class="muted">Choisis un thème. Il est mémorisé et appliqué immédiatement, y compris au prochain lancement.</p><div class="actions" style="flex-wrap:wrap"><button class="theme-choice" data-sec="theme" data-theme="auto"><span class="theme-swatch" style="background:linear-gradient(135deg,#16865a 50%,#263140 50%)"></span>Automatique</button><button class="theme-choice" data-sec="theme" data-theme="light"><span class="theme-swatch" style="background:#14835a"></span>Clair</button><button class="theme-choice" data-sec="theme" data-theme="dark"><span class="theme-swatch" style="background:#1b241e"></span>Sombre</button><button class="theme-choice" data-sec="theme" data-theme="forest"><span class="theme-swatch" style="background:#267348"></span>Forêt</button><button class="theme-choice" data-sec="theme" data-theme="royal"><span class="theme-swatch" style="background:#5869c8"></span>Royal</button><button class="theme-choice" data-sec="theme" data-theme="rose"><span class="theme-swatch" style="background:#b65377"></span>Rose</button></div></div>
  <div class="card"><h3>Personnaliser l'application</h3><label class="lbl">Nom affiché<input id="appNameInput" maxlength="32" value="${esc(appName)}" placeholder="Nom de votre application"></label><label class="lbl">Photo / logo de l'accueil<input id="brandPhotoInput" type="file" accept="image/png,image/jpeg,image/webp"></label><p class="muted">Image locale JPEG, PNG ou WebP, 2 Mo maximum. Format carré recommandé.</p><div class="actions"><button class="pri" data-sec="saveBrand">Enregistrer</button><button data-sec="clearBrand">Réinitialiser la photo</button></div></div>
  <div class="card"><h3>Verrouillage et sécurité</h3><label class="lbl"><input type="checkbox" id="pinEnabled" ${db.settings.pinEnabled?'checked':''}> Activer le verrouillage PIN</label><label class="lbl">Nouveau PIN (4 à 8 chiffres)<input id="pinNew" type="password" inputmode="numeric" maxlength="8" placeholder="Nouveau code"></label><label class="lbl">Confirmer le PIN<input id="pinConfirm" type="password" inputmode="numeric" maxlength="8" placeholder="Confirmer"></label><div class="actions"><button class="pri" data-sec="savePin">Enregistrer le PIN</button><button data-sec="disablePin">Désactiver</button></div><label class="lbl"><input type="checkbox" id="biometricEnabled" ${db.settings.biometricEnabled?'checked':''}> Activer la biométrie si prise en charge</label><button data-sec="testBiometric">Tester la biométrie</button><p class="muted" id="securityInfo">Le PIN est protégé par PBKDF2-SHA-256. La biométrie nécessite la prise en charge native Android et reste indisponible dans la version HTML seule.</p></div>
  ${reglagesExtra()}
@@ -452,7 +497,7 @@ function act(a,d){
       if(c){const m={id:uid(),name:(PERIODS[c.period]||'Course')+' du '+fdate(c.date),kind:MKIND[c.period]?c.period:'autre',notes:'',items:strip(c.items)};db.models.push(m);ui.tab='modeles';ui.courseId=null;ui.modelId=m.id;toast('Modèle créé : renommez-le si besoin')}
       break;
     }
-    case 'delItem': {const o=owner(d.kind,d.owner);if(o)o.items=o.items.filter(i=>i.id!==d.iid);break}
+    case 'delItem': {const o=owner(d.kind,d.owner),i=o&&o.items.find(x=>x.id===d.iid);if(i)syncItemStock(i,true);if(o)o.items=o.items.filter(i=>i.id!==d.iid);break}
     case 'addItem': {
       const name=$('#n_name').value.trim();
       if(!name){toast('Indiquez le nom du produit');break}
@@ -496,14 +541,15 @@ bought.forEach(i=>{let s=db.stocks.find(x=>x.name.trim().toLowerCase()===i.name.
     case 'rptDay': ui.rpt={from:iso(),to:iso()};break;
   }
 }
+function syncItemStock(i,forceRemove=false){if(!i||i._stockSyncDemo)return;const applied=Number(i.stockAppliedQty)||0;const wanted=forceRemove?0:(i.bought?Number(i.qty)||0:0);const delta=wanted-applied;if(Math.abs(delta)<1e-9)return;const key=n=>String(n||'').trim().toLocaleLowerCase('fr');const st=db.stocks.find(x=>key(x.name)===key(i.name)&&key(x.unit)===key(i.unit));if(st){st.qty-=delta;st.exits=Math.max(0,(Number(st.exits)||0)+delta);st.last=iso();st.hist=st.hist||[];st.hist.push({date:iso(),qty:Math.abs(delta),dir:delta>0?'out':'in',source:'course',itemId:i.id});}i.stockAppliedQty=wanted;}
 function setField(el){
   const d=el.dataset, v=el.type==='checkbox'?el.checked:el.value;
   if(d.set==='item'){
     const o=owner(d.kind,d.owner), i=o&&o.items.find(x=>x.id===d.iid);
     if(!i)return;
-    if(d.f==='qty'||d.f==='est') i[d.f]=num(v);
-    else if(d.f==='price'){i.price=v===''?null:num(v);if(i.price!==null)i.bought=true}
-    else if(d.f==='bought'){i.bought=v;if(v&&i.price==null)i.price=i.est}
+    if(d.f==='qty'||d.f==='est') {i[d.f]=num(v);if(d.f==='qty')syncItemStock(i);}
+    else if(d.f==='price'){i.price=v===''?null:num(v);if(i.price!==null)i.bought=true;syncItemStock(i)}
+    else if(d.f==='bought'){i.bought=v;if(v&&i.price==null)i.price=i.est;syncItemStock(i)}
   }
   else if(d.set==='course'||d.set==='model'){const o=owner(d.set,d.owner);if(o)o[d.f]=v}
   else if(d.set==='addModel'){const m=db.models.find(x=>x.id===v),c=owner('course',d.owner);if(m&&c)c.items.push(...strip(m.items));if(m)toast('Produits ajoutés')}
@@ -523,7 +569,7 @@ function render(){
     if(typeof V[ui.tab]!=='function')throw new Error('Vue inconnue : '+ui.tab);
     $('#app').innerHTML=bannerBackup()+V[ui.tab]();
     if(ui.tab==='reglages')madaCloudRenderSecureLabel();
-    applyBranding();
+    applyTheme();applyBranding();
   }catch(error){
     console.error('Mada Courses render error',error);
     $('#app').innerHTML='<div class="card warn"><h2>Erreur d’affichage</h2><p>La vue « '+esc(ui.tab)+' » n’a pas pu être affichée.</p><p class="muted">'+esc(error?.message||String(error))+'</p><button class="pri" data-act="tab" data-v="accueil">Retour Accueil</button><button data-act="tab" data-v="reglages">Réglages</button></div>';
@@ -532,7 +578,7 @@ function render(){
 
 /* ---------- événements ---------- */
 document.addEventListener('click',e=>{
-  const sec=e.target.closest('[data-sec]');if(sec){(async()=>{try{const action=sec.dataset.sec;if(action==='saveBrand'){const name=document.getElementById('appNameInput').value.trim();if(!name)throw Error('Nom obligatoire.');db.settings.appName=name.slice(0,32);const file=document.getElementById('brandPhotoInput').files[0];if(file)await new Promise((resolve,reject)=>{if(!/^image\/(png|jpeg|webp)$/.test(file.type)||file.size>2*1024*1024)return reject(Error('Image invalide : 2 Mo maximum.'));const r=new FileReader();r.onerror=()=>reject(Error('Lecture impossible'));r.onload=()=>{db.settings.brandPhoto=String(r.result);resolve()};r.readAsDataURL(file)});save();applyBranding();toast('Personnalisation enregistrée.')}else if(action==='clearBrand'){db.settings.brandPhoto='';save();applyBranding();toast('Photo réinitialisée.')}else if(action==='savePin'){const a=document.getElementById('pinNew').value,b=document.getElementById('pinConfirm').value;if(!/^\d{4,8}$/.test(a)||a!==b)throw Error('PIN invalide ou confirmation différente.');db.settings.pinSalt=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();db.settings.pinHash=await pinDigest(a,db.settings.pinSalt);db.settings.pinEnabled=true;save();toast('PIN activé.')}else if(action==='disablePin'){db.settings.pinEnabled=false;db.settings.biometricEnabled=false;save();toast('Verrouillage désactivé.')}else if(action==='testBiometric'){if(!db.settings.pinHash)throw Error('Configure d’abord un PIN.');if(window.AndroidBridge?.authenticateBiometric)AndroidBridge.authenticateBiometric();else toast('Biométrie disponible uniquement dans l’application Android.')} }catch(err){toast(err.message||'Erreur de sécurité.')}})();return;}
+  const sec=e.target.closest('[data-sec]');if(sec){(async()=>{try{const action=sec.dataset.sec;if(action==='saveBrand'){const name=document.getElementById('appNameInput').value.trim();if(!name)throw Error('Nom obligatoire.');db.settings.appName=name.slice(0,32);const file=document.getElementById('brandPhotoInput').files[0];if(file)await new Promise((resolve,reject)=>{if(!/^image\/(png|jpeg|webp)$/.test(file.type)||file.size>2*1024*1024)return reject(Error('Image invalide : 2 Mo maximum.'));const r=new FileReader();r.onerror=()=>reject(Error('Lecture impossible'));r.onload=()=>{db.settings.brandPhoto=String(r.result);resolve()};r.readAsDataURL(file)});save();applyBranding();toast('Personnalisation enregistrée.')}else if(action==='theme'){const t=sec.dataset.theme;if(!['auto','light','dark','forest','royal','rose'].includes(t))throw Error('Thème invalide.');db.settings.theme=t;save();applyTheme();toast('Thème appliqué : '+t)}else if(action==='clearBrand'){db.settings.brandPhoto='';save();applyBranding();toast('Photo réinitialisée.')}else if(action==='savePin'){const a=document.getElementById('pinNew').value,b=document.getElementById('pinConfirm').value;if(!/^\d{4,8}$/.test(a)||a!==b)throw Error('PIN invalide ou confirmation différente.');db.settings.pinSalt=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();db.settings.pinHash=await pinDigest(a,db.settings.pinSalt);db.settings.pinEnabled=true;save();toast('PIN activé.')}else if(action==='disablePin'){db.settings.pinEnabled=false;db.settings.biometricEnabled=false;save();toast('Verrouillage désactivé.')}else if(action==='testBiometric'){if(!db.settings.pinHash)throw Error('Configure d’abord un PIN.');if(window.AndroidBridge?.authenticateBiometric)AndroidBridge.authenticateBiometric();else toast('Biométrie disponible uniquement dans l’application Android.')} }catch(err){toast(err.message||'Erreur de sécurité.')}})();return;}
   const el=e.target.closest('[data-act]');
   if(!el)return;
   act(el.dataset.act,el.dataset);
@@ -616,6 +662,7 @@ async function madaR2Smoke(){const token=await madaCloudToken();const fileId='ma
 async function madaR2UploadSelectedFile(){const input=document.getElementById('madaR2File'),file=input?.files?.[0];if(!file)throw Error('Choisis d’abord un fichier à envoyer.');const maxBytes=10*1024*1024;if(file.size<=0)throw Error('Le fichier est vide.');if(file.size>maxBytes)throw Error('Fichier trop volumineux : limite 10 Mio.');const token=await madaCloudToken(),installationId=await madaInstallationId();const safeInstall=installationId.replace(/[^A-Za-z0-9_-]/g,'').slice(0,18)||'device';const fileId='mada-file-test-'+safeInstall;const {data:list}=await madaCloudRequest('/v1/cloud/files',{},token);const existing=(list.items||[]).find(x=>x.fileId===fileId);const expectedRevision=Number(existing?.revision||0);madaCloudMessage('Calcul SHA-256 et envoi du fichier « '+file.name+' »…');const bytes=await file.arrayBuffer();const sha=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',value)),x=>x.toString(16).padStart(2,'0')).join('');const localHash=await sha(bytes);const put=await madaNativeBinaryRequest(MADA_CLOUD_API+'/v1/cloud/file?fileId='+encodeURIComponent(fileId),'PUT',{Authorization:'Bearer '+token,'X-AppForge-Expected-Revision':String(expectedRevision),'Content-Type':'application/octet-stream'},bytes);const saved=await put.json().catch(()=>({}));if(!put.ok)throw Error(saved.error||'Upload R2 HTTP '+put.status);const get=await madaNativeBinaryRequest(MADA_CLOUD_API+'/v1/cloud/file?fileId='+encodeURIComponent(fileId),'GET',{Authorization:'Bearer '+token},null);if(!get.ok)throw Error('Téléchargement R2 HTTP '+get.status);const received=await get.arrayBuffer(),downloadHash=await sha(received),headerHash=get.headers.get('X-AppForge-SHA256');if(localHash!==downloadHash||localHash!==headerHash||saved.sha256!==localHash)throw Error('Échec du contrôle SHA-256 : le fichier téléchargé ne correspond pas à l’original.');const blob=new Blob([received],{type:file.type||'application/octet-stream'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=file.name;link.style.display='none';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);madaCloudMessage('Test R2 réussi : « '+file.name+' » · '+file.size.toLocaleString('fr-FR')+' octets · upload + téléchargement vérifiés · SHA-256 identique · révision '+saved.revision+'. Le fichier téléchargé est enregistré dans les Téléchargements sur Android.');await madaCloudQuota();}
 async function madaCloudQuota(){const token=await madaCloudToken();const {data}=await madaCloudRequest('/v1/cloud/quota',{},token);const d=data.d1||{},r=data.r2||{};const box=document.getElementById('madaCloudQuota');if(box)box.innerHTML='<div class="kpi"><small>D1 utilisé / max.</small><b>'+Number(d.usedBytes||0).toLocaleString('fr-FR')+' / '+Number(d.maxBytes||0).toLocaleString('fr-FR')+' o</b></div><div class="kpi"><small>R2 fichiers</small><b>'+Number(r.fileCount||0)+' / '+Number(r.maxFiles||0)+'</b></div><div class="kpi"><small>R2 utilisé / max.</small><b>'+Number(r.usedBytes||0).toLocaleString('fr-FR')+' / '+Number(r.maxBytes||0).toLocaleString('fr-FR')+' o</b></div>';madaCloudMessage('Quotas actualisés depuis le Worker. R2 '+(r.available?'disponible':'indisponible')+'.');}
 document.addEventListener('click',e=>{const button=e.target.closest('[data-cloud]');if(!button)return;const action=button.dataset.cloud;button.disabled=true;Promise.resolve().then(async()=>{if(action==='activate')await madaActivateLicense();else if(action==='trial')await madaStartTrial();else if(action==='read')await madaReadCloudSnapshot();else if(action==='push')await madaPushCloud();else if(action==='restore')await madaRestoreCloud();else if(action==='r2')await madaR2Smoke();else if(action==='upload-file')await madaR2UploadSelectedFile();else if(action==='quota')await madaCloudQuota()}).catch(error=>madaCloudMessage(error.message||'Erreur Cloud inconnue.',true)).finally(()=>{button.disabled=false})});
+function applyTheme(){const t=db.settings.theme||'auto';document.documentElement.setAttribute('data-theme',t);document.querySelectorAll('.theme-choice').forEach(b=>b.classList.toggle('active',b.dataset.theme===t));}
 function applyBranding(){const title=document.getElementById('brandTitle'),mark=document.getElementById('brandMark');if(title)title.textContent=db.settings.appName||'MADA COURSES';if(mark){const photo=db.settings.brandPhoto;if(photo){mark.innerHTML='<img alt="Logo" src="'+photo+'">';mark.classList.add('has-photo')}else{mark.textContent='🛒';mark.classList.remove('has-photo')}}}
 async function pinDigest(pin,salt){const enc=new TextEncoder(),key=await crypto.subtle.importKey('raw',enc.encode(pin),'PBKDF2',false,['deriveBits']),bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:210000,hash:'SHA-256'},key,256);return Array.from(new Uint8Array(bits),b=>b.toString(16).padStart(2,'0')).join('')}
 function showPinLock(){if(!db.settings.pinEnabled||!db.settings.pinHash)return;const el=document.getElementById('pinLock');if(el){el.hidden=false;const bio=document.getElementById('unlockBioBtn');if(bio)bio.hidden=!db.settings.biometricEnabled}}
