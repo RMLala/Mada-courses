@@ -216,6 +216,65 @@ public class MainActivity extends FragmentActivity {
     /** Méthodes appelées depuis le JavaScript de la page. */
     public class Bridge {
         @JavascriptInterface
+        public String requestBinary(String urlText, String method, String headersJson, String bodyBase64) {
+            HttpURLConnection conn = null;
+            try {
+                Uri uri = Uri.parse(urlText);
+                if (!"https".equalsIgnoreCase(uri.getScheme())
+                        || !"appforge-license-api.lalainaadclick.workers.dev".equalsIgnoreCase(uri.getHost())
+                        || uri.getPath() == null || !uri.getPath().equals("/v1/cloud/file")) {
+                    return new JSONObject().put("ok", false).put("error", "URL binaire non autorisée").toString();
+                }
+                String verb = (method == null || method.isEmpty()) ? "GET" : method.toUpperCase();
+                if (!(verb.equals("GET") || verb.equals("PUT"))) {
+                    return new JSONObject().put("ok", false).put("error", "Méthode binaire non autorisée").toString();
+                }
+                conn = (HttpURLConnection) new URL(urlText).openConnection();
+                conn.setRequestMethod(verb);
+                conn.setConnectTimeout(15000);
+                conn.setReadTimeout(20000);
+                conn.setInstanceFollowRedirects(false);
+                JSONObject headers = new JSONObject(headersJson == null ? "{}" : headersJson);
+                java.util.Iterator<String> keys = headers.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String value = headers.optString(key, "");
+                    if (!key.equalsIgnoreCase("Host") && !key.equalsIgnoreCase("Content-Length")) conn.setRequestProperty(key, value);
+                }
+                if (verb.equals("PUT") && bodyBase64 != null && !bodyBase64.isEmpty()) {
+                    conn.setDoOutput(true);
+                    byte[] bytes = Base64.decode(bodyBase64, Base64.DEFAULT);
+                    try (OutputStream os = conn.getOutputStream()) { os.write(bytes); }
+                }
+                int status = conn.getResponseCode();
+                InputStream stream = status >= 400 ? conn.getErrorStream() : conn.getInputStream();
+                byte[] received = new byte[0];
+                if (stream != null) {
+                    try (InputStream is = stream; ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                        byte[] buf = new byte[8192]; int n;
+                        while ((n = is.read(buf)) != -1) out.write(buf, 0, n);
+                        received = out.toByteArray();
+                    }
+                }
+                String hashHeader = conn.getHeaderField("X-AppForge-SHA256");
+                return new JSONObject().put("ok", true).put("status", status)
+                        .put("contentType", conn.getContentType())
+                        .put("sha256Header", hashHeader == null ? "" : hashHeader)
+                        .put("bodyBase64", Base64.encodeToString(received, Base64.NO_WRAP)).toString();
+            } catch (Exception ex) {
+                try {
+                    return new JSONObject().put("ok", false).put("error", "Erreur réseau binaire native ("
+                            + ex.getClass().getSimpleName() + "): "
+                            + (ex.getMessage() == null ? "sans détail" : ex.getMessage())).toString();
+                } catch (Exception ignored) {
+                    return "{\"ok\":false,\"error\":\"Transport binaire Android indisponible\"}";
+                }
+            } finally {
+                if (conn != null) conn.disconnect();
+            }
+        }
+
+        @JavascriptInterface
         public String requestNetwork(String urlText, String method, String headersJson, String body) {
             HttpURLConnection conn = null;
             try {
