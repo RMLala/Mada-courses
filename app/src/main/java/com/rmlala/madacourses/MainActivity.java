@@ -106,6 +106,16 @@ public class MainActivity extends FragmentActivity {
         });
         web.setWebViewClient(new WebViewClient() {
             @Override
+            public boolean shouldOverrideUrlLoading(WebView view, android.webkit.WebResourceRequest request) {
+                Uri uri = request.getUrl();
+                String url = uri.toString();
+                if (url.startsWith("file:///android_asset/")) return false;
+                if ("https".equalsIgnoreCase(uri.getScheme()) || "http".equalsIgnoreCase(uri.getScheme())) {
+                    try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); } catch (Exception ignored) {}
+                }
+                return true;
+            }
+            @Override
             public void onPageFinished(WebView view, String url) {
                 view.evaluateJavascript(DOWNLOAD_BRIDGE_JS, null);
             }
