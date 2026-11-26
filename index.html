@@ -74,6 +74,66 @@ nav button{min-height:54px}
 .product-line{display:grid;grid-template-columns:auto minmax(70px,1fr) repeat(2,minmax(62px,86px)) minmax(72px,92px) auto;gap:6px;align-items:end}.price-field{display:flex;flex-direction:column;gap:3px;min-width:0;color:var(--muted);font-size:10px}.price-field input{width:100%;min-width:0;padding:8px 6px;font-size:14px}.line-total{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}.line-total-wrap{grid-column:2/-2;text-align:right}.catalog-tools{display:grid;grid-template-columns:1fr minmax(120px,.7fr);gap:8px;margin-top:10px}.catalog-tools input,.catalog-tools select{width:100%;min-width:0}.product-admin{padding:6px 0;border-top:1px solid var(--line)}.product-admin .add{display:grid;grid-template-columns:1.2fr 1fr .7fr .8fr auto}.product-admin input,.product-admin select{width:100%;min-width:0}.brand-mark.has-photo{overflow:hidden}.brand-mark img{width:100%;height:100%;object-fit:cover}.pin-lock{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:20px}.pin-lock[hidden]{display:none}.pin-box{width:min(100%,360px);padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--card);display:grid;gap:12px}.pin-box input{width:100%;text-align:center;letter-spacing:.3em;font-size:22px}@media(max-width:480px){.product-line{grid-template-columns:auto minmax(65px,1fr) repeat(2,minmax(60px,1fr))}.product-line .line-total-wrap{grid-column:2/4;text-align:left}.product-admin .add{grid-template-columns:1fr 1fr}.catalog-tools{grid-template-columns:1fr}}
 
 .product-line{display:grid;grid-template-columns:auto minmax(70px,1fr) repeat(2,minmax(62px,86px)) minmax(72px,92px) auto;gap:6px;align-items:end}.price-field{display:flex;flex-direction:column;gap:3px;min-width:0;color:var(--muted);font-size:10px}.price-field input{width:100%;min-width:0;padding:8px 6px;font-size:14px}.line-total{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}.line-total-wrap{grid-column:2/-2;text-align:right}.catalog-tools{display:grid;grid-template-columns:1fr minmax(120px,.7fr);gap:8px;margin-top:10px}.catalog-tools input,.catalog-tools select{width:100%;min-width:0}.product-admin{padding:6px 0;border-top:1px solid var(--line)}.product-admin .add{display:grid;grid-template-columns:1.2fr 1fr .7fr .8fr auto}.product-admin input,.product-admin select{width:100%;min-width:0}@media(max-width:480px){.product-line{grid-template-columns:auto minmax(65px,1fr) repeat(2,minmax(60px,1fr))}.product-line .line-total-wrap{grid-column:2/4;text-align:left}.product-admin .add{grid-template-columns:1fr 1fr}.catalog-tools{grid-template-columns:1fr}}
+
+/* Premium UI refresh v1.6 */
+:root{--accent:#087f57;--soft:#e7f5ee;--line:#e2e9e4;--shadow:0 8px 28px rgba(18,54,36,.07)}
+body{background:linear-gradient(180deg,#f4f8f5 0,#f3f6f4 100%);padding-bottom:88px}
+header.app-header{min-height:74px;padding:12px 14px;gap:12px;box-shadow:0 2px 12px rgba(14,58,37,.04)}
+.brand-mark{width:44px;height:44px;border-radius:15px}
+.brand-copy h1{font-size:17px;font-weight:800}
+.brand-copy small{font-size:12px}
+main{max-width:900px;padding:14px 12px 26px}
+.card{border-radius:20px;padding:16px;margin:10px 0;box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--line) 80%,transparent)}
+h2{font-size:20px;font-weight:800;margin:6px 0 12px}
+h3{font-size:16px;font-weight:750;margin:16px 0 8px}
+.kpis{gap:9px}
+.kpi{border-radius:17px;padding:13px 14px;background:linear-gradient(155deg,var(--card),color-mix(in srgb,var(--soft) 30%,var(--card)));box-shadow:0 3px 12px rgba(10,48,30,.035)}
+.kpi small{font-size:11px;line-height:1.4}
+.kpi b{font-size:clamp(15px,4.2vw,20px);font-weight:800;line-height:1.25;overflow-wrap:anywhere}
+button{border-radius:13px;min-height:40px;font-weight:600}
+button.pri{box-shadow:0 5px 14px rgba(8,127,87,.16)}
+input,select{min-height:42px;border-radius:13px;border-color:var(--line);background:color-mix(in srgb,var(--bg) 75%,var(--card));padding:9px 11px}
+.lbl{font-size:12px;gap:6px}
+.actions{gap:8px}
+nav{padding:5px 8px env(safe-area-inset-bottom,0px);gap:4px}
+nav button{min-height:62px;padding:8px 4px;font-size:12px}
+nav button.on{font-weight:800}
+.side-menu{border-radius:0 22px 22px 0}
+.row{gap:9px}
+.product-line{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:12px;margin:10px 0;box-shadow:0 2px 8px rgba(10,48,30,.035)}
+.product-line .grow b{font-size:15px;line-height:1.3;display:block}
+.product-line .muted{font-size:11px;line-height:1.35;margin-top:3px}
+.product-line .price-field small{font-size:10px;font-weight:700;letter-spacing:.02em}
+.product-line input{font-size:15px;min-height:43px}
+.product-line input.q,.product-line input.p{width:100%;max-width:none}
+.product-line .line-total{font-size:14px}
+.product-line button.dng{min-width:42px;color:var(--danger);border-color:color-mix(in srgb,var(--danger) 22%,var(--line))}
+.product-add{background:color-mix(in srgb,var(--soft) 35%,var(--card));border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:16px}
+.product-add .lbl{margin:0 0 10px}
+.product-add .add{gap:8px}
+.product-add .add input,.product-add .add select{min-width:0}
+.menu-head{border-radius:16px;background:var(--soft)}
+.side-link{min-height:46px;font-weight:600}
+.empty{padding:24px 12px}
+@media(max-width:480px){
+ main{padding:10px 10px 24px}
+ .kpis{gap:8px}
+ .kpi{padding:11px 12px}
+ .product-line{grid-template-columns:24px minmax(0,1fr) minmax(0,1fr);grid-template-areas:"check name name" "qty est est" "paid paid total" "delete delete delete";align-items:center;gap:8px;padding:12px 11px}
+ .product-line>input[type=checkbox]{grid-area:check;width:20px;height:20px;margin:0;accent-color:var(--accent)}
+ .product-line>.grow{grid-area:name;min-width:0}
+ .product-line>.price-field:nth-of-type(1){grid-area:qty}
+ .product-line>.price-field:nth-of-type(2){grid-area:est}
+ .product-line>.price-field:nth-of-type(3){grid-area:paid}
+ .product-line .line-total-wrap{grid-area:total;text-align:right;align-self:center}
+ .product-line>button.dng{grid-area:delete;justify-self:end;width:100%;min-height:36px}
+ .product-line .line-total{font-size:15px}
+ .product-line .price-field input{padding:8px 9px}
+ .product-add .add{display:grid;grid-template-columns:1fr 1fr}
+ .product-add .add button{grid-column:1/-1}
+ .catalog-tools{grid-template-columns:1fr}
+ header .menu-trigger,header .header-settings{width:40px;height:40px}
+}
 </style>
 </head>
 <body>
@@ -92,7 +152,7 @@ const PLACES={marche:'Marché (tsena)',epicerie:'Épicerie de quartier',ambulant
 const MKIND={matin:'Achat du matin',dejeuner:'Achat du déjeuner',apresmidi:'Après-midi',soir:'Achat du soir',quotidien:'Quotidien',hebdo:'Hebdomadaire',mensuel:'Mensuel',exceptionnel:'Exceptionnel',autre:'Autre'};
 const CATS=['Riz et céréales','Légumes','Fruits','Viandes','Poissons et fruits de mer','Produits laitiers','Épicerie','Huiles et condiments','Boissons',"Produits d'entretien",'Hygiène et beauté','Gaz et combustibles','Autres'];
 const UNITS=['kg','demi-kg','g','L','pièce','kapoaka','daba','sobika','tas','botte','sachet','paquet','bouteille'];
-const TABS=[['accueil','🏠','Accueil'],['budget','💰','Budget'],['courses','🛒','Courses'],['modeles','📋','Modèles'],['historique','🕘','Historique'],['stocks','📦','Stocks'],['catalogue','🏷️','Produits'],['rapports','📊','Rapports']];
+const TABS=[['accueil','🏠','Accueil'],['budget','💰','Budget'],['courses','🛒','Courses'],['modeles','📋','Modèles'],['historique','🕘','Historique'],['stocks','📦','Stocks'],['catalogue','🏷️','Produits'],['rapports','📊','Rapports'],['guide','📘','Guide utilisateur']];
 
 /* ---------- utilitaires ---------- */
 const $=s=>document.querySelector(s);
@@ -312,6 +372,20 @@ function vCatalogue(){
   ${list.map(p=>`<div class='card'><b>${esc(p.n)}</b> <span class='muted'>· ${esc(p.unit)} · ${esc(p.cat)}</span><div class='kpis' style='margin-top:8px'>${kpi('Dernier prix payé',money(p.last)+' ('+fdate(p.lastDate)+')')}${kpi('Prix moyen pondéré',money(p.q?p.sum/p.q:0))}${kpi('Min / max',money(p.min)+' / '+money(p.max))}${kpi('Achats',p.count+' · '+esc(p.place))}</div><div class='muted' style='margin-top:6px'>Historique : ${p.hist.slice(0,6).map(h=>fdate(h[0])+' : '+money(h[1])).join(' · ')}</div></div>`).join('')||`<div class='card empty'>Aucun produit acheté pour le moment.</div>`}`;
 }
 function cloudPanel(){return `<div class="card" id="mada-cloud-v3-panel"><h3>AppForge Licence & Cloud V3</h3><p class="muted">Worker central : appforge-license-api · Produit MADACOURSES. Les données restent locales tant que tu n’actives pas l’essai ou une licence.</p><p class="muted" id="madaCloudSecure">Stockage sécurisé : vérification…</p><div class="field"><label for="madaLicenseCode">Code de licence AppForge</label><input id="madaLicenseCode" type="text" autocomplete="off" autocapitalize="characters" maxlength="80" placeholder="Saisir le code de licence"></div><div class="actions"><button class="pri" data-cloud="activate">Activer la licence</button><button data-cloud="trial">Démarrer / reprendre l’essai gratuit 72 h</button><button data-cloud="read">Lire la sauvegarde Cloud</button><button data-cloud="push">Envoyer la sauvegarde locale</button><button data-cloud="restore">Restaurer depuis le Cloud</button> <button data-cloud="quota">Actualiser les quotas</button></div><div class="field" style="margin-top:12px"><small class="muted">Pour personnaliser l'accueil, utilise Réglages → Personnaliser l'application. La photo reste locale.</small></div><div class="notice" id="madaCloudStatus" role="status" aria-live="polite">Cloud non connecté. Les données locales ne sont pas modifiées.</div><div id="madaCloudQuota" class="kpis"></div><p class="muted">Les sauvegardes D1 restent distinctes des préférences et photos de personnalisation locales.</p></div>`}
+function vGuide(){
+ return `<section class="card"><h2>📘 Guide utilisateur</h2><p class="muted">Mada Courses · guide rapide, conçu pour une utilisation simple au quotidien.</p>
+ <h3>1. Configurer le budget</h3><p>Dans <b>Budget</b>, renseignez votre budget mensuel et les montants reçus/remis. Le solde et les dépenses se calculent à partir des achats enregistrés.</p>
+ <h3>2. Préparer une course</h3><p>Depuis <b>Accueil</b> ou <b>Courses</b>, créez une course, choisissez la date, le moment et le lieu. Ajoutez les articles un par un ou utilisez un modèle. La quantité et le prix estimé permettent de prévoir le montant.</p>
+ <h3>3. Pendant les achats</h3><p>Cochez un produit lorsque vous l'avez acheté, puis saisissez le <b>prix unitaire réellement payé</b>. Le montant payé par ligne et les KPI de course se mettent à jour. Le prix payé est distinct du prix estimé.</p>
+ <h3>4. Valider et analyser</h3><p>Validez la course quand elle est terminée. Les vues <b>Historique</b> et <b>Rapports</b> permettent de revoir les achats, filtrer une période, comparer les dépenses et repérer les catégories et produits coûteux.</p>
+ <h3>5. Modèles et catalogue</h3><p>Les <b>Modèles</b> réutilisent une liste de produits pour les courses récurrentes. Le <b>Catalogue</b> mémorise les produits, unités, catégories et prix de référence. Les prix historiques proviennent des achats saisis.</p>
+ <h3>6. Stocks</h3><p>Enregistrez les produits suivis, leurs quantités, seuils minimum, entrées et sorties. Les alertes de stock faible vous aident à préparer les prochaines courses.</p>
+ <h3>7. Sauvegarder / restaurer</h3><p>Dans <b>Réglages → Sauvegarde et restauration</b>, exportez un fichier JSON avant un changement d'appareil. Pour restaurer, choisissez le fichier JSON de sauvegarde. La restauration remplace les données présentes : faites une sauvegarde préalable.</p>
+ <h3>8. Licence et Cloud</h3><p>Dans <b>Réglages → AppForge V3 / Licence & Cloud</b>, démarrez l'essai ou saisissez votre code de licence. L'accès Cloud est conditionné par un statut de licence/essai actif. Le stockage Android sécurisé est utilisé lorsque disponible; en HTML seul, les jetons sont conservés dans le stockage local du navigateur.</p>
+ <h3>9. Confidentialité et sécurité</h3><p>Les données de gestion restent locales par défaut. Activez un PIN depuis Réglages si vous souhaitez verrouiller l'accès à l'application. La biométrie dépend de la prise en charge Android.</p>
+ <div class="actions"><button class="pri" data-act="tab" data-v="accueil">Retour à l'accueil</button><button data-act="tab" data-v="reglages">Ouvrir les réglages</button></div></section>
+ <section class="card"><h2>ℹ️ Application & licence</h2><div class="kpis">${kpi('Application','Mada Courses')}${kpi('Version','1.6.0 Premium UI')}${kpi('Android','API 23+ · Android 6.0+')}${kpi('Licence','Essai 72 h / licence AppForge')}</div><p class="muted">Les fonctions Cloud nécessitent un essai ou une licence valide. Une licence n'est pas confirmée simplement par l'installation de l'application. Consultez la section Licence & Cloud dans Réglages pour vérifier l'état réel.</p></section>`;
+}
 function vReglages(){
  const appName=db.settings.appName||'MADA COURSES';
  return `<h2>Réglages</h2>
@@ -444,7 +518,7 @@ function setField(el){
 function render(){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.tab));
   document.querySelectorAll('.side-link').forEach(b=>b.classList.toggle('active',b.dataset.v===ui.tab));
-  const V={accueil:vAccueil,courses:vCourses,modeles:vModeles,historique:vHistorique,budget:vBudget,stocks:vStocks,catalogue:vCatalogue,rapports:vRapports,reglages:vReglages};
+  const V={accueil:vAccueil,courses:vCourses,modeles:vModeles,historique:vHistorique,budget:vBudget,stocks:vStocks,catalogue:vCatalogue,rapports:vRapports,guide:vGuide,reglages:vReglages};
   try{
     if(typeof V[ui.tab]!=='function')throw new Error('Vue inconnue : '+ui.tab);
     $('#app').innerHTML=bannerBackup()+V[ui.tab]();
