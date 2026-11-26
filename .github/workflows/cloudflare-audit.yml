@@ -1,0 +1,77 @@
+name: Cloudflare access audit
+
+on:
+  push:
+    branches:
+      - premium-finalisation-20261123
+  pull_request:
+    branches:
+      - android-build
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      WORKER_URL: https://appforge-license-api.lalainaadclick.workers.dev
+    steps:
+      - name: Vérifier la présence des secrets (sans les afficher)
+        shell: bash
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::Secret CLOUDFLARE_API_TOKEN absent ou inaccessible"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::Secret CLOUDFLARE_ACCOUNT_ID absent ou inaccessible"; exit 1; }
+          echo "Secrets disponibles pour ce workflow."
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Vérifier l'accès au compte Cloudflare
+        run: npx --yes wrangler@4 whoami
+
+      - name: Vérifier le bucket R2
+        shell: bash
+        run: |
+          npx --yes wrangler@4 r2 bucket list | tee /tmp/r2-buckets.txt
+          grep -Fq "appforge-cloud-files" /tmp/r2-buckets.txt || { echo "::error::Bucket appforge-cloud-files introuvable dans ce compte"; exit 1; }
+
+      - name: Vérifier la base D1
+        shell: bash
+        run: |
+          npx --yes wrangler@4 d1 list | tee /tmp/d1-databases.txt
+          grep -Fq "appforge-licenses" /tmp/d1-databases.txt || { echo "::error::Base appforge-licenses introuvable dans ce compte"; exit 1; }
+
+      - name: Vérifier le Worker en production
+        shell: bash
+        run: |
+          curl --fail --silent --show-error "$WORKER_URL/health" | tee /tmp/health.json
+          jq -e '.ok == true' /tmp/health.json >/dev/null
+          curl --fail --silent --show-error "$WORKER_URL/v1/config" | jq -e '.protocol == "appforge-license-v1"' >/dev/null
+
+      - name: Tester l'essai MADACOURSES et l'accès Cloud avec un appareil de test isolé
+        shell: bash
+        run: |
+          set -euo pipefail
+          TEST_INSTALLATION_ID="00000000-0000-4000-8000-00000000a202"
+          trial=$(curl --silent --show-error --fail -X POST "$WORKER_URL/v1/trial" -H "Content-Type: application/json" -d "{\"productId\":\"MADACOURSES\",\"installationId\":\"$TEST_INSTALLATION_ID\"}")
+          echo "$trial" | jq -e '.token and .cloudAccess.token and .expiresAt' >/dev/null || { echo "::error::Essai MADACOURSES ou jeton Cloud non délivré"; exit 1; }
+          token=$(echo "$trial" | jq -r '.token')
+          status=$(curl --silent --show-error --fail -X POST "$WORKER_URL/v1/status" -H "Content-Type: application/json" -d "{\"productId\":\"MADACOURSES\",\"token\":\"$token\",\"installationId\":\"$TEST_INSTALLATION_ID\"}")
+          echo "$status" | jq -e '.active == true' >/dev/null || { echo "::error::Essai de test délivré mais statut inactif"; exit 1; }
+          cloud=$(echo "$trial" | jq -r '.cloudAccess.token')
+          curl --silent --show-error --fail "$WORKER_URL/v1/cloud/snapshot?resource=default" -H "Authorization: Bearer $cloud" | jq -e '.snapshot == null or .snapshot != null' >/dev/null
+          echo "Essai MADACOURSES et accès Cloud test confirmés (installation de test isolée)."
+
+      - name: Vérifier le refus d'accès R2 sans jeton
+        shell: bash
+        run: |
+          code=$(curl --silent --output /tmp/unauthorized.json --write-out '%{http_code}' "$WORKER_URL/v1/cloud/files")
+          test "$code" = "401" || { echo "::error::Accès R2 sans jeton : HTTP $code (attendu 401)"; cat /tmp/unauthorized.json; exit 1; }
+          echo "Accès anonyme refusé : HTTP 401."

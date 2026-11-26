@@ -14,7 +14,7 @@ header h1{margin:0;font-size:18px;color:var(--accent)}
 header small{color:var(--muted)}
 main{padding:14px;max-width:820px;margin:0 auto}
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
-nav{overflow-x:auto}nav button{flex:0 0 auto;min-width:64px;border:0;background:none;color:var(--muted);padding:8px 4px;font-size:11px;cursor:pointer}
+nav{overflow-x:auto}nav button{flex:1 1 0;min-width:0;border:0;background:none;color:var(--muted);padding:8px 4px;font-size:11px;cursor:pointer}
 nav button.on{color:var(--accent);font-weight:600}
 nav button span{display:block;font-size:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
@@ -58,12 +58,90 @@ button:active{transform:scale(.97)}
 input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
 h2{letter-spacing:-.01em}
 main{padding:16px 14px 24px}
-</style>
+.app-header{display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:64px}
+.app-header .menu-trigger,.app-header .header-settings{width:42px;height:42px;border:0;border-radius:13px;background:var(--soft);color:var(--accent);font-size:21px;display:grid;place-items:center;padding:0;flex:0 0 auto}
+.brand-mark{width:40px;height:40px;border-radius:13px;background:linear-gradient(145deg,#16865a,#0d6045);display:grid;place-items:center;color:#fff;font-size:22px;box-shadow:0 5px 14px rgba(22,134,90,.22)}
+.brand-copy{flex:1;min-width:0}.brand-copy h1{font-size:16px;letter-spacing:.04em}.brand-copy small{font-size:11px}
+.menu-shade{position:fixed;inset:0;background:rgba(10,20,15,.42);z-index:19;opacity:0;visibility:hidden;transition:.2s}
+.side-menu{position:fixed;z-index:20;top:0;bottom:0;left:0;width:min(82vw,320px);padding:calc(22px + env(safe-area-inset-top)) 14px 22px;background:var(--card);box-shadow:18px 0 50px rgba(0,0,0,.18);transform:translateX(-105%);transition:transform .22s ease;overflow-y:auto}
+body.menu-open .side-menu{transform:translateX(0)}body.menu-open .menu-shade{opacity:1;visibility:visible}
+.menu-head{padding:12px 12px 20px;margin-bottom:8px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px}.menu-head b{color:var(--accent);letter-spacing:.04em}.menu-head small{color:var(--muted)}
+.side-link{display:flex;align-items:center;gap:12px;width:100%;border:0;text-align:left;background:transparent;padding:12px;border-radius:12px;color:var(--text);font-size:14px;margin:2px 0}
+.side-link.active{background:var(--soft);color:var(--accent);font-weight:700}.side-link .side-icon{width:24px;text-align:center;font-size:18px}
+nav button{min-height:54px}
+@media(min-width:700px){.side-menu{width:300px}main{padding-left:22px;padding-right:22px}}
+
+.product-line{display:grid;grid-template-columns:auto minmax(70px,1fr) repeat(2,minmax(62px,86px)) minmax(72px,92px) auto;gap:6px;align-items:end}.price-field{display:flex;flex-direction:column;gap:3px;min-width:0;color:var(--muted);font-size:10px}.price-field input{width:100%;min-width:0;padding:8px 6px;font-size:14px}.line-total{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}.line-total-wrap{grid-column:2/-2;text-align:right}.catalog-tools{display:grid;grid-template-columns:1fr minmax(120px,.7fr);gap:8px;margin-top:10px}.catalog-tools input,.catalog-tools select{width:100%;min-width:0}.product-admin{padding:6px 0;border-top:1px solid var(--line)}.product-admin .add{display:grid;grid-template-columns:1.2fr 1fr .7fr .8fr auto}.product-admin input,.product-admin select{width:100%;min-width:0}.brand-mark.has-photo{overflow:hidden}.brand-mark img{width:100%;height:100%;object-fit:cover}.pin-lock{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:20px}.pin-lock[hidden]{display:none}.pin-box{width:min(100%,360px);padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--card);display:grid;gap:12px}.pin-box input{width:100%;text-align:center;letter-spacing:.3em;font-size:22px}@media(max-width:480px){.product-line{grid-template-columns:auto minmax(65px,1fr) repeat(2,minmax(60px,1fr))}.product-line .line-total-wrap{grid-column:2/4;text-align:left}.product-admin .add{grid-template-columns:1fr 1fr}.catalog-tools{grid-template-columns:1fr}}
+
+.product-line{display:grid;grid-template-columns:auto minmax(70px,1fr) repeat(2,minmax(62px,86px)) minmax(72px,92px) auto;gap:6px;align-items:end}.price-field{display:flex;flex-direction:column;gap:3px;min-width:0;color:var(--muted);font-size:10px}.price-field input{width:100%;min-width:0;padding:8px 6px;font-size:14px}.line-total{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}.line-total-wrap{grid-column:2/-2;text-align:right}.catalog-tools{display:grid;grid-template-columns:1fr minmax(120px,.7fr);gap:8px;margin-top:10px}.catalog-tools input,.catalog-tools select{width:100%;min-width:0}.product-admin{padding:6px 0;border-top:1px solid var(--line)}.product-admin .add{display:grid;grid-template-columns:1.2fr 1fr .7fr .8fr auto}.product-admin input,.product-admin select{width:100%;min-width:0}@media(max-width:480px){.product-line{grid-template-columns:auto minmax(65px,1fr) repeat(2,minmax(60px,1fr))}.product-line .line-total-wrap{grid-column:2/4;text-align:left}.product-admin .add{grid-template-columns:1fr 1fr}.catalog-tools{grid-template-columns:1fr}}
+
+/* Premium UI refresh v1.6 */
+:root{--accent:#087f57;--soft:#e7f5ee;--line:#e2e9e4;--shadow:0 8px 28px rgba(18,54,36,.07)}
+body{background:linear-gradient(180deg,#f4f8f5 0,#f3f6f4 100%);padding-bottom:88px}
+header.app-header{min-height:74px;padding:12px 14px;gap:12px;box-shadow:0 2px 12px rgba(14,58,37,.04)}
+.brand-mark{width:44px;height:44px;border-radius:15px}
+.brand-copy h1{font-size:17px;font-weight:800}
+.brand-copy small{font-size:12px}
+main{max-width:900px;padding:14px 12px 26px}
+.card{border-radius:20px;padding:16px;margin:10px 0;box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--line) 80%,transparent)}
+h2{font-size:20px;font-weight:800;margin:6px 0 12px}
+h3{font-size:16px;font-weight:750;margin:16px 0 8px}
+.kpis{gap:9px}
+.kpi{border-radius:17px;padding:13px 14px;background:linear-gradient(155deg,var(--card),color-mix(in srgb,var(--soft) 30%,var(--card)));box-shadow:0 3px 12px rgba(10,48,30,.035)}
+.kpi small{font-size:11px;line-height:1.4}
+.kpi b{font-size:clamp(15px,4.2vw,20px);font-weight:800;line-height:1.25;overflow-wrap:anywhere}
+button{border-radius:13px;min-height:40px;font-weight:600}
+button.pri{box-shadow:0 5px 14px rgba(8,127,87,.16)}
+input,select{min-height:42px;border-radius:13px;border-color:var(--line);background:color-mix(in srgb,var(--bg) 75%,var(--card));padding:9px 11px}
+.lbl{font-size:12px;gap:6px}
+.actions{gap:8px}
+nav{padding:5px 8px env(safe-area-inset-bottom,0px);gap:4px}
+nav button{min-height:62px;padding:8px 4px;font-size:12px}
+nav button.on{font-weight:800}
+.side-menu{border-radius:0 22px 22px 0}
+.row{gap:9px}
+.product-line{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:12px;margin:10px 0;box-shadow:0 2px 8px rgba(10,48,30,.035)}
+.product-line .grow b{font-size:15px;line-height:1.3;display:block}
+.product-line .muted{font-size:11px;line-height:1.35;margin-top:3px}
+.product-line .price-field small{font-size:10px;font-weight:700;letter-spacing:.02em}
+.product-line input{font-size:15px;min-height:43px}
+.product-line input.q,.product-line input.p{width:100%;max-width:none}
+.product-line .line-total{font-size:14px}
+.product-line button.dng{min-width:42px;color:var(--danger);border-color:color-mix(in srgb,var(--danger) 22%,var(--line))}
+.product-add{background:color-mix(in srgb,var(--soft) 35%,var(--card));border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:16px}
+.product-add .lbl{margin:0 0 10px}
+.product-add .add{gap:8px}
+.product-add .add input,.product-add .add select{min-width:0}
+.menu-head{border-radius:16px;background:var(--soft)}
+.side-link{min-height:46px;font-weight:600}
+.empty{padding:24px 12px}
+@media(max-width:480px){
+ main{padding:10px 10px 24px}
+ .kpis{gap:8px}
+ .kpi{padding:11px 12px}
+ .product-line{grid-template-columns:24px minmax(0,1fr) minmax(0,1fr);grid-template-areas:"check name name" "qty est est" "paid paid total" "delete delete delete";align-items:center;gap:8px;padding:12px 11px}
+ .product-line>input[type=checkbox]{grid-area:check;width:20px;height:20px;margin:0;accent-color:var(--accent)}
+ .product-line>.grow{grid-area:name;min-width:0}
+ .product-line>.price-field:nth-of-type(1){grid-area:qty}
+ .product-line>.price-field:nth-of-type(2){grid-area:est}
+ .product-line>.price-field:nth-of-type(3){grid-area:paid}
+ .product-line .line-total-wrap{grid-area:total;text-align:right;align-self:center}
+ .product-line>button.dng{grid-area:delete;justify-self:end;width:100%;min-height:36px}
+ .product-line .line-total{font-size:15px}
+ .product-line .price-field input{padding:8px 9px}
+ .product-add .add{display:grid;grid-template-columns:1fr 1fr}
+ .product-add .add button{grid-column:1/-1}
+ .catalog-tools{grid-template-columns:1fr}
+ header .menu-trigger,header .header-settings{width:40px;height:40px}
+}
+.kpi-link{cursor:pointer;transition:transform .12s,box-shadow .12s}.kpi-link:active{transform:scale(.985)}.kpi-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}</style>
 </head>
 <body>
-<header><h1>🛒 MADA COURSES PRO</h1><small>Courses, budget et rapports du foyer · fonctionne hors ligne</small> <button class='sm' data-act='tab' data-v='reglages' style='float:right'>⚙ Réglages</button></header>
+<header class="app-header"><button class="menu-trigger" type="button" aria-label="Ouvrir le menu" data-act="menuToggle">☰</button><div class="brand-mark" id="brandMark">🛒</div><div class="brand-copy"><h1 id="brandTitle">MADA COURSES</h1><small>Gestion du foyer · Premium</small></div><button class="header-settings" type="button" aria-label="Réglages" data-act="tab" data-v="reglages">⚙</button></header>
+<div id="menuShade" class="menu-shade" data-act="menuClose"></div><aside id="sideMenu" class="side-menu" aria-label="Navigation principale"><div class="menu-head"><b>MADA COURSES PRO</b><small>Votre gestion au quotidien</small></div><div id="sideLinks"></div></aside>
 <main id="app"></main>
 <nav id="nav"></nav>
+<div id="pinLock" class="pin-lock" hidden><div class="pin-box"><h2>Application verrouillée</h2><p class="muted">Saisis ton PIN pour continuer.</p><input id="unlockPin" type="password" inputmode="numeric" maxlength="8" placeholder="Code PIN"><button class="pri" id="unlockPinBtn">Déverrouiller</button><button id="unlockBioBtn" hidden onclick="window.AndroidBridge&&window.AndroidBridge.authenticateBiometric&&window.AndroidBridge.authenticateBiometric()">Utiliser la biométrie</button><p id="pinError" class="warn"></p></div></div>
 <div id="toast" class="toast"></div>
 <datalist id="units"></datalist>
 <script>
@@ -74,7 +152,7 @@ const PLACES={marche:'Marché (tsena)',epicerie:'Épicerie de quartier',ambulant
 const MKIND={matin:'Achat du matin',dejeuner:'Achat du déjeuner',apresmidi:'Après-midi',soir:'Achat du soir',quotidien:'Quotidien',hebdo:'Hebdomadaire',mensuel:'Mensuel',exceptionnel:'Exceptionnel',autre:'Autre'};
 const CATS=['Riz et céréales','Légumes','Fruits','Viandes','Poissons et fruits de mer','Produits laitiers','Épicerie','Huiles et condiments','Boissons',"Produits d'entretien",'Hygiène et beauté','Gaz et combustibles','Autres'];
 const UNITS=['kg','demi-kg','g','L','pièce','kapoaka','daba','sobika','tas','botte','sachet','paquet','bouteille'];
-const TABS=[['accueil','🏠','Accueil'],['budget','💰','Budget'],['courses','🛒','Courses'],['modeles','📋','Modèles'],['historique','🕘','Historique'],['stocks','📦','Stocks'],['catalogue','🏷️','Produits'],['rapports','📊','Rapports']];
+const TABS=[['accueil','🏠','Accueil'],['budget','💰','Budget'],['courses','🛒','Courses'],['modeles','📋','Modèles'],['historique','🕘','Historique'],['stocks','📦','Stocks'],['catalogue','🏷️','Produits'],['rapports','📊','Rapports'],['guide','📘','Guide utilisateur']];
 
 /* ---------- utilitaires ---------- */
 const $=s=>document.querySelector(s);
@@ -93,7 +171,7 @@ const spent=items=>items.reduce((s,i)=>s+(i.bought&&i.price!=null?i.qty*i.price:
 const estimated=items=>items.reduce((s,i)=>s+i.qty*i.est,0);
 const lines=cs=>cs.flatMap(c=>c.items.filter(i=>i.bought&&i.price!=null).map(i=>({c,i,amt:i.qty*i.price})));
 const sumBy=(arr,f)=>{const m={};arr.forEach(x=>{const k=f(x)||'—';m[k]=(m[k]||0)+x.amt});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
-const kpi=(label,value)=>`<div class="kpi"><small>${label}</small><b>${value}</b></div>`;
+const kpi=(label,value,target='')=>{const t=target||(/budget|solde|recettes|remis/i.test(label)?'budget':/dépensé|achat|course|catégorie|moyenne|total/i.test(label)?'rapports':'');return `<div class="kpi ${t?'kpi-link':''}" ${t?'role="button" tabindex="0" data-act="tab" data-v="'+t+'"':''}><small>${label}${t?' · ↗':''}</small><b>${value}</b></div>`};
 const bars=(en,tot)=>en.length?en.map(([k,v])=>{const p=tot?Math.round(v/tot*100):0;return `<div class="row"><div class="grow">${esc(k)}<div class="bar"><i style="width:${p}%"></i></div></div><b>${money(v)}</b><small class="muted">${p}%</small></div>`}).join(''):'<div class="empty">Aucune dépense</div>';
 const monthRange=off=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+off);const y=d.getFullYear(),m=d.getMonth();return{from:ymd(new Date(y,m,1)),to:ymd(new Date(y,m+1,0))}};
 
@@ -131,18 +209,14 @@ function courseRow(c){
 }
 function courseCard(c){return `<div class="card" style="cursor:pointer" data-act="openCourse" data-id="${c.id}">${courseRow(c)}</div>`}
 function itemRow(i,kind,owner){
-  const dd=`data-kind="${kind}" data-owner="${owner}" data-iid="${i.id}"`;
-  const check=kind==='course'?`<input type="checkbox" ${i.bought?'checked':''} data-set="item" data-f="bought" ${dd} title="Acheté">`:'';
-  const price=kind==='course'?`<input class="p" type="number" step="any" min="0" placeholder="payé" value="${i.price??''}" data-set="item" data-f="price" ${dd}>`:'';
-  return `<div class="row">${check}<div class="grow"><b>${esc(i.name)}</b><div class="muted">${esc(i.cat)} · ${esc(i.unit)}</div></div>
-    <input class="q" type="number" step="any" min="0" value="${i.qty}" data-set="item" data-f="qty" ${dd} title="Quantité">
-    <input class="p" type="number" step="any" min="0" placeholder="prix estimé" value="${i.est}" data-set="item" data-f="est" ${dd} title="Prix estimé">
-    ${price}
-    <button class="sm dng" data-act="delItem" ${dd}>✕</button></div>`;
+ const dd=`data-kind="${kind}" data-owner="${owner}" data-iid="${i.id}"`,check=kind==='course'?`<input type="checkbox" ${i.bought?'checked':''} data-set="item" data-f="bought" ${dd}>`:'';
+ const paid=kind==='course'?`<label class="price-field"><small>PU payé</small><input class="p" type="number" min="0" step="any" value="${i.price??''}" placeholder="PU payé" data-set="item" data-f="price" ${dd}></label>`:'';
+ const total=kind==='course'?`<span class="line-total" data-line-total="${i.id}">${money(i.bought&&i.price!=null?i.qty*i.price:0)}</span>`:'';
+ return `<div class="row product-line">${check}<div class="grow"><b>${esc(i.name)}</b><div class="muted">${esc(i.cat)} · ${esc(i.unit)}</div></div><label class="price-field"><small>Qté</small><input class="q" type="number" min="0" step="any" value="${i.qty}" data-set="item" data-f="qty" ${dd}></label><label class="price-field"><small>PU estimé</small><input class="p" type="number" min="0" step="any" value="${i.est}" data-set="item" data-f="est" ${dd}></label>${paid}<span class="line-total-wrap">${total}</span><button class="sm dng" data-act="delItem" ${dd}>✕</button></div>`;
 }
-function addForm(kind,id){return prodPicker()+addFormOld(kind,id)}
-function addFormOld(kind,id){
-  return `<div class="add"><input id="n_name" placeholder="Produit (ex. Riz)"><input id="n_qty" type="number" step="any" value="1" style="max-width:90px"><input id="n_unit" list="units" value="kg" style="max-width:110px"><input id="n_est" type="number" step="any" placeholder="Prix estimé"><select id="n_cat">${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><button class="pri" data-act="addItem" data-kind="${kind}" data-owner="${id}">Ajouter</button></div>`;
+function addForm(kind,id){
+ const opts=(db.products||[]).map(p=>`<option value="${esc(p.name)}"></option>`).join('');
+ return `<div class="product-add"><label class="lbl">Produit — rechercher dans le catalogue<input id="n_name" list="productNames" autocomplete="off" placeholder="Rechercher ou saisir un produit"><datalist id="productNames">${opts}</datalist></label><div class="add"><label class="price-field"><small>Quantité</small><input id="n_qty" type="number" min="0.01" step="any" value="1"></label><label class="price-field"><small>Unité</small><input id="n_unit" list="units" value="kg"></label><label class="price-field"><small>PU estimé</small><input id="n_est" type="number" min="0" step="any" placeholder="Prix unitaire"></label><select id="n_cat">${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><button class="pri" data-act="addItem" data-kind="${kind}" data-owner="${id}">Ajouter</button></div><p class="muted" id="productMatchHint">Le produit existant sera reconnu automatiquement.</p></div>`;
 }
 function vAccueil(){
   const t=iso(),m=t.slice(0,7);
@@ -297,12 +371,28 @@ function vCatalogue(){
   return `${prodManager()}<div class='card'><label class='lbl'>Rechercher un produit<input value='${esc(ui.catQ)}' placeholder='ex. riz' data-set='cq'></label><p class='muted'>Prix calculés à partir des achats réellement payés. Le dernier prix indique sa date : ce n'est pas un prix actuel confirmé.</p></div>
   ${list.map(p=>`<div class='card'><b>${esc(p.n)}</b> <span class='muted'>· ${esc(p.unit)} · ${esc(p.cat)}</span><div class='kpis' style='margin-top:8px'>${kpi('Dernier prix payé',money(p.last)+' ('+fdate(p.lastDate)+')')}${kpi('Prix moyen pondéré',money(p.q?p.sum/p.q:0))}${kpi('Min / max',money(p.min)+' / '+money(p.max))}${kpi('Achats',p.count+' · '+esc(p.place))}</div><div class='muted' style='margin-top:6px'>Historique : ${p.hist.slice(0,6).map(h=>fdate(h[0])+' : '+money(h[1])).join(' · ')}</div></div>`).join('')||`<div class='card empty'>Aucun produit acheté pour le moment.</div>`}`;
 }
+function cloudPanel(){return `<div class="card" id="mada-cloud-v3-panel"><h3>AppForge Licence & Cloud V3</h3><p class="muted">Worker central : appforge-license-api · Produit MADACOURSES. Les données restent locales tant que tu n’actives pas l’essai ou une licence.</p><p class="muted" id="madaCloudSecure">Stockage sécurisé : vérification…</p><div class="field"><label for="madaLicenseCode">Code de licence AppForge</label><input id="madaLicenseCode" type="text" autocomplete="off" autocapitalize="characters" maxlength="80" placeholder="Saisir le code de licence"></div><div class="actions"><button class="pri" data-cloud="activate">Activer la licence</button><button data-cloud="trial">Démarrer / reprendre l’essai gratuit 72 h</button><button data-cloud="read">Lire la sauvegarde Cloud</button><button data-cloud="push">Envoyer la sauvegarde locale</button><button data-cloud="restore">Restaurer depuis le Cloud</button> <button data-cloud="quota">Actualiser les quotas</button></div><div class="field" style="margin-top:12px"><small class="muted">Pour personnaliser l'accueil, utilise Réglages → Personnaliser l'application. La photo reste locale.</small></div><div class="notice" id="madaCloudStatus" role="status" aria-live="polite">Cloud non connecté. Les données locales ne sont pas modifiées.</div><div id="madaCloudQuota" class="kpis"></div><p class="muted">Les sauvegardes D1 restent distinctes des préférences et photos de personnalisation locales.</p></div>`}
+function vGuide(){
+ return `<section class="card"><h2>📘 Guide utilisateur</h2><p class="muted">Mada Courses · guide rapide, conçu pour une utilisation simple au quotidien.</p>
+ <h3>1. Configurer le budget</h3><p>Dans <b>Budget</b>, renseignez votre budget mensuel et les montants reçus/remis. Le solde et les dépenses se calculent à partir des achats enregistrés.</p>
+ <h3>2. Préparer une course</h3><p>Depuis <b>Accueil</b> ou <b>Courses</b>, créez une course, choisissez la date, le moment et le lieu. Ajoutez les articles un par un ou utilisez un modèle. La quantité et le prix estimé permettent de prévoir le montant.</p>
+ <h3>3. Pendant les achats</h3><p>Cochez un produit lorsque vous l'avez acheté, puis saisissez le <b>prix unitaire réellement payé</b>. Le montant payé par ligne et les KPI de course se mettent à jour. Le prix payé est distinct du prix estimé.</p>
+ <h3>4. Valider et analyser</h3><p>Validez la course quand elle est terminée. Les vues <b>Historique</b> et <b>Rapports</b> permettent de revoir les achats, filtrer une période, comparer les dépenses et repérer les catégories et produits coûteux.</p>
+ <h3>5. Modèles et catalogue</h3><p>Les <b>Modèles</b> réutilisent une liste de produits pour les courses récurrentes. Le <b>Catalogue</b> mémorise les produits, unités, catégories et prix de référence. Les prix historiques proviennent des achats saisis.</p>
+ <h3>6. Stocks</h3><p>Enregistrez les produits suivis, leurs quantités, seuils minimum, entrées et sorties. Les alertes de stock faible vous aident à préparer les prochaines courses.</p>
+ <h3>7. Sauvegarder / restaurer</h3><p>Dans <b>Réglages → Sauvegarde et restauration</b>, exportez un fichier JSON avant un changement d'appareil. Pour restaurer, choisissez le fichier JSON de sauvegarde. La restauration remplace les données présentes : faites une sauvegarde préalable.</p>
+ <h3>8. Licence et Cloud</h3><p>Dans <b>Réglages → AppForge V3 / Licence & Cloud</b>, démarrez l'essai ou saisissez votre code de licence. L'accès Cloud est conditionné par un statut de licence/essai actif. Le stockage Android sécurisé est utilisé lorsque disponible; en HTML seul, les jetons sont conservés dans le stockage local du navigateur.</p>
+ <h3>9. Confidentialité et sécurité</h3><p>Les données de gestion restent locales par défaut. Activez un PIN depuis Réglages si vous souhaitez verrouiller l'accès à l'application. La biométrie dépend de la prise en charge Android.</p>
+ <div class="actions"><button class="pri" data-act="tab" data-v="accueil">Retour à l'accueil</button><button data-act="tab" data-v="reglages">Ouvrir les réglages</button></div></section>
+ <section class="card"><h2>ℹ️ Application & licence</h2><div class="kpis">${kpi('Application','Mada Courses')}${kpi('Version','1.6.0 Premium UI')}${kpi('Android','API 23+ · Android 6.0+')}${kpi('Licence','Essai 72 h / licence AppForge')}</div><p class="muted">Les fonctions Cloud nécessitent un essai ou une licence valide. Une licence n'est pas confirmée simplement par l'installation de l'application. Consultez la section Licence & Cloud dans Réglages pour vérifier l'état réel.</p></section>`;
+}
 function vReglages(){
-  return `<h2>Réglages</h2>
-  <div class='card'><h3>Données de l'appareil</h3><p class='muted'>${db.courses.length} course(s) · ${db.models.length} modèle(s) · ${db.stocks.length} produit(s) en stock · ${db.remises.length} remise(s). Tout est stocké uniquement dans ce navigateur.</p>
-  <div class='actions'><button data-act='loadDemo'>Charger des données de démo</button><button class='dng' data-act='resetAll'>Tout effacer et recommencer</button></div></div>
-${reglagesExtra()}
-  <div class='card'><h3>Pour commencer</h3><p class='muted'>L'application est vide. Créez un modèle dans l'onglet Modèles, ou une course directement depuis l'accueil. « Tout effacer » supprime courses, modèles, stocks et remises, après confirmation.</p></div>`;
+ const appName=db.settings.appName||'MADA COURSES';
+ return `<h2>Réglages</h2>
+ <div class="card"><h3>Personnaliser l'application</h3><label class="lbl">Nom affiché<input id="appNameInput" maxlength="32" value="${esc(appName)}" placeholder="Nom de votre application"></label><label class="lbl">Photo / logo de l'accueil<input id="brandPhotoInput" type="file" accept="image/png,image/jpeg,image/webp"></label><p class="muted">Image locale JPEG, PNG ou WebP, 2 Mo maximum. Format carré recommandé.</p><div class="actions"><button class="pri" data-sec="saveBrand">Enregistrer</button><button data-sec="clearBrand">Réinitialiser la photo</button></div></div>
+ <div class="card"><h3>Verrouillage et sécurité</h3><label class="lbl"><input type="checkbox" id="pinEnabled" ${db.settings.pinEnabled?'checked':''}> Activer le verrouillage PIN</label><label class="lbl">Nouveau PIN (4 à 8 chiffres)<input id="pinNew" type="password" inputmode="numeric" maxlength="8" placeholder="Nouveau code"></label><label class="lbl">Confirmer le PIN<input id="pinConfirm" type="password" inputmode="numeric" maxlength="8" placeholder="Confirmer"></label><div class="actions"><button class="pri" data-sec="savePin">Enregistrer le PIN</button><button data-sec="disablePin">Désactiver</button></div><label class="lbl"><input type="checkbox" id="biometricEnabled" ${db.settings.biometricEnabled?'checked':''}> Activer la biométrie si prise en charge</label><button data-sec="testBiometric">Tester la biométrie</button><p class="muted" id="securityInfo">Le PIN est protégé par PBKDF2-SHA-256. La biométrie nécessite la prise en charge native Android et reste indisponible dans la version HTML seule.</p></div>
+ ${reglagesExtra()}
+ <div class='card'><h3>Pour commencer</h3><p class='muted'>Vos données sont conservées localement. Effectuez régulièrement une sauvegarde.</p></div>`;
 }
 
 const BK='madaCoursesPro.backups', LS='madaCoursesPro.lastSnap', LB='madaCoursesPro.lastBackup';
@@ -324,17 +414,27 @@ function reglagesExtra(){
   <div class='card'><h3>Cat\u00e9gories</h3>${cats().map(c=>`<div class='row'><div class='grow'>${esc(c)}</div><button class='sm dng' data-act='delCat' data-v='${esc(c)}'>\u2715</button></div>`).join('')}<div class='add'><input id='nc' placeholder='Nouvelle cat\u00e9gorie'><button data-act='addCat'>Ajouter</button></div></div>
   <div class='card'><h3>Magasins et march\u00e9s</h3>${db.shops.map(s=>`<div class='row'><div class='grow'><b>${esc(s.name)}</b><div class='muted'>${esc(PLACES[s.type]||'')} \u00b7 ${esc(s.address)} \u00b7 ${esc(s.contact)}</div><div class='muted'>${esc(s.notes)}</div></div><button class='sm dng' data-act='delShop' data-id='${s.id}'>\u2715</button></div>`).join('')||`<div class='empty'>Aucun magasin enregistr\u00e9.</div>`}
   <div class='add'><input id='sh_n' placeholder='Nom'><input id='sh_a' placeholder='Adresse'><select id='sh_t'>${Object.entries(PLACES).map(([k,v])=>`<option value='${k}'>${v}</option>`).join('')}</select><input id='sh_c' placeholder='Contact'><input id='sh_o' placeholder='Observations'><button class='pri' data-act='addShop'>Ajouter</button></div></div>
-  <div class='card'><h3>Affichage</h3><button data-act='toggleTheme'>Basculer clair / sombre</button></div>`;
+  <div class='card'><h3>Affichage</h3><button data-act='toggleTheme'>Basculer clair / sombre</button></div>${cloudPanel()}`;
 }
 
-function prodPicker(){const ps=db.products||[];return ps.length?`<div class='lbl'>Choisir un produit enregistr\u00e9<select id='n_prod'><option value=''>\u2014 saisie libre \u2014</option>${ps.map(p=>`<option value='${p.id}'>${esc(p.name)} (${esc(p.unit)})</option>`).join('')}</select></div>`:''}
-function prodManager(){return `<div class='card'><h3>Mes produits</h3><p class='muted'>Cr\u00e9ez vos produits une fois, puis s\u00e9lectionnez-les dans les mod\u00e8les et les courses.</p><div class='add'><input id='pr_n' placeholder='Nom du produit'><select id='pr_c'>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><input id='pr_u' list='units' value='kg' style='max-width:110px'><input id='pr_p' type='number' step='any' min='0' placeholder='Prix de r\u00e9f\u00e9rence' style='max-width:150px'><button class='pri' data-act='addProd'>Cr\u00e9er</button></div>${(db.products||[]).map(p=>`<div class='row'><div class='grow'><b>${esc(p.name)}</b> <span class='muted'>${esc(p.unit)} \u00b7 r\u00e9f. ${money(p.ref)}</span><div class='lbl' style='margin:4px 0 0'><select data-set='prod' data-f='cat' data-owner='${p.id}'>${cats().map(c=>`<option ${c===p.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></div></div><button class='sm dng' data-act='delProd' data-id='${p.id}'>\u2715</button></div>`).join('')||`<div class='empty'>Aucun produit pour le moment.</div>`}</div>`}
-
+function prodManager(){
+ const products=db.products||[],q=(ui.productQ||'').toLocaleLowerCase('fr').trim(),sort=ui.productSort||'name';
+ const list=products.filter(p=>!q||[p.name,p.cat,p.unit].join(' ').toLocaleLowerCase('fr').includes(q)).sort((a,b)=>sort==='price'?(Number(b.ref)||0)-(Number(a.ref)||0):sort==='category'?String(a.cat).localeCompare(String(b.cat),'fr'):a.name.localeCompare(b.name,'fr'));
+ return `<div class="card"><h3>Mes produits</h3><p class="muted">Catalogue réutilisable, modifiable directement, avec recherche et tri.</p><div class="add"><input id="pr_n" placeholder="Nom du produit"><select id="pr_c">${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><input id="pr_u" list="units" value="kg" placeholder="Unité"><input id="pr_p" type="number" min="0" step="any" placeholder="Prix de référence"><button class="pri" data-act="addProd">Créer</button></div><div class="catalog-tools"><input value="${esc(ui.productQ||'')}" data-set="productQ" placeholder="Rechercher nom, catégorie…"><select data-set="productSort"><option value="name" ${sort==='name'?'selected':''}>Tri : nom</option><option value="category" ${sort==='category'?'selected':''}>Tri : catégorie</option><option value="price" ${sort==='price'?'selected':''}>Tri : prix décroissant</option></select></div><p class="muted">${list.length} / ${products.length} produit(s)</p>${list.map(p=>`<div class="product-admin"><div class="add"><input aria-label="Nom" value="${esc(p.name)}" data-set="prod" data-f="name" data-owner="${p.id}"><select aria-label="Catégorie" data-set="prod" data-f="cat" data-owner="${p.id}">${cats().map(c=>`<option ${c===p.cat?'selected':''}>${esc(c)}</option>`).join('')}</select><input aria-label="Unité" value="${esc(p.unit)}" data-set="prod" data-f="unit" data-owner="${p.id}"><input aria-label="Prix de référence" type="number" min="0" step="any" value="${Number(p.ref)||0}" data-set="prod" data-f="ref" data-owner="${p.id}"><button class="sm dng" data-act="delProd" data-id="${p.id}">Supprimer</button></div></div>`).join('')||'<div class="empty">Aucun produit correspondant.</div>'}</div>`;
+}
+function vCatalogue(){
+ const L=lines(db.courses).sort((a,b)=>b.c.date.localeCompare(a.c.date)),P={};
+ L.forEach(x=>{const k=x.i.name.trim().toLowerCase()+'|'+x.i.unit,p=P[k]||(P[k]={n:x.i.name,unit:x.i.unit,cat:x.i.cat,last:null,lastDate:'',sum:0,q:0,min:Infinity,max:0,place:'',count:0});p.count++;(p.hist=p.hist||[]).push([x.c.date,x.i.price]);p.sum+=x.i.qty*x.i.price;p.q+=x.i.qty;p.min=Math.min(p.min,x.i.price);p.max=Math.max(p.max,x.i.price);if(!p.last){p.last=x.i.price;p.lastDate=x.c.date;p.place=PLACES[x.c.place]+(x.c.lieu?' — '+x.c.lieu:'')}});
+ const q=ui.catQ.trim().toLowerCase(),list=Object.values(P).filter(p=>!q||p.n.toLowerCase().includes(q)).sort((a,b)=>a.n.localeCompare(b.n));
+ return `${prodManager()}<div class="card"><label class="lbl">Filtrer l'historique<input value="${esc(ui.catQ)}" placeholder="ex. riz" data-set="cq"></label><p class="muted">Prix issus des achats réellement payés.</p></div>${list.map(p=>`<div class="card"><b>${esc(p.n)}</b> <span class="muted">· ${esc(p.unit)} · ${esc(p.cat)}</span><div class="kpis" style="margin-top:8px">${kpi('Dernier prix payé',money(p.last)+' ('+fdate(p.lastDate)+')')}${kpi('Prix moyen pondéré',money(p.q?p.sum/p.q:0))}${kpi('Min / max',money(p.min)+' / '+money(p.max))}${kpi('Achats',p.count+' · '+esc(p.place))}</div><div class="muted" style="margin-top:6px">Historique : ${p.hist.slice(0,6).map(h=>fdate(h[0])+' : '+money(h[1])).join(' · ')}</div></div>`).join('')||'<div class="card empty">Aucun produit acheté.</div>'}`;
+}
 function rateOf(s){const h=(s.hist||[]).slice().sort((a,b)=>a[0].localeCompare(b[0]));if(h.length<2)return 0;const days=(Date.parse(h[h.length-1][0])-Date.parse(h[0][0]))/864e5;if(days<=0)return 0;return h.slice(0,-1).reduce((t,x)=>t+x[1],0)/days}
 /* ---------- actions ---------- */
 function act(a,d){
   switch(a){
-    case 'tab': ui.tab=d.v; ui.courseId=null; ui.modelId=null; break;
+    case 'tab': ui.tab=d.v; ui.courseId=null; ui.modelId=null; document.body.classList.remove('menu-open'); break;
+    case 'menuToggle': document.body.classList.toggle('menu-open'); break;
+    case 'menuClose': document.body.classList.remove('menu-open'); break;
     case 'newCourse': openC(makeCourse(iso(),'matin',[])); break;
     case 'quick': {
       const p=d.period;
@@ -356,8 +456,8 @@ function act(a,d){
     case 'addItem': {
       const name=$('#n_name').value.trim();
       if(!name){toast('Indiquez le nom du produit');break}
-      const o=owner(d.kind,d.owner);
-      if(o)o.items.push({id:uid(),pid:($('#n_prod')&&$('#n_prod').value)||null,name,qty:num($('#n_qty').value)||1,unit:$('#n_unit').value.trim()||'pièce',est:num($('#n_est').value),cat:$('#n_cat').value,price:null,bought:false});
+      const o=owner(d.kind,d.owner),match=(db.products||[]).find(p=>p.name.trim().toLocaleLowerCase('fr')===name.toLocaleLowerCase('fr'));
+      if(o)o.items.push({id:uid(),pid:match?.id||null,name:match?.name||name,qty:num($('#n_qty').value)||1,unit:match?.unit||$('#n_unit').value.trim()||'pièce',est:match?Number(match.ref)||0:num($('#n_est').value),cat:match?.cat||$('#n_cat').value,price:null,bought:false});
       break;
     }
     case 'newModel': {const m={id:uid(),name:'Nouveau modèle',kind:'autre',notes:'',items:[]};db.models.push(m);ui.tab='modeles';ui.modelId=m.id;break}
@@ -383,8 +483,7 @@ bought.forEach(i=>{let s=db.stocks.find(x=>x.name.trim().toLowerCase()===i.name.
     case 'addShop': {const n=$('#sh_n').value.trim();if(!n){toast('Nom du magasin requis');break}db.shops.push({id:uid(),name:n,address:$('#sh_a').value.trim(),type:$('#sh_t').value,contact:$('#sh_c').value.trim(),notes:$('#sh_o').value.trim()});break}
     case 'delShop': if(sure('ds'+d.id)){db.shops=db.shops.filter(x=>x.id!==d.id)}break;
     case 'toggleTheme': document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';break;
-    case 'addProd': {const n=$('#pr_n').value.trim();if(!n){toast('Nom du produit requis');break}db.products=[...(db.products||[]),{id:uid(),name:n,cat:$('#pr_c').value,unit:$('#pr_u').value.trim()||'pièce',ref:num($('#pr_p').value)}];toast('Produit cr\u00e9\u00e9');break}
-    case 'delProd': if(sure('dp'+d.id)){db.products=db.products.filter(x=>x.id!==d.id);toast('Produit supprim\u00e9')}break;
+    case 'addProd': {const n=$('#pr_n').value.trim();if(!n){toast('Nom du produit requis');break}if((db.products||[]).some(p=>p.name.trim().toLocaleLowerCase('fr')===n.toLocaleLowerCase('fr'))){toast('Ce produit existe déjà. Modifie sa fiche dans la liste.');break}db.products=[...(db.products||[]),{id:uid(),name:n,cat:$('#pr_c').value,unit:$('#pr_u').value.trim()||'pièce',ref:num($('#pr_p').value)}];toast('Produit créé');break;}
     case 'resetAll': if(sure('reset')){db=seed();ui.courseId=null;ui.modelId=null;ui.updFor=null;toast('Toutes les données ont été effacées')}break;
     case 'loadDemo': if(sure('demo')){db=demo();ui.courseId=null;ui.modelId=null;ui.updFor=null;toast('Données de démo chargées')}break;
     case 'pickUpd': ui.updFor=d.id;break;
@@ -408,7 +507,9 @@ function setField(el){
   }
   else if(d.set==='course'||d.set==='model'){const o=owner(d.set,d.owner);if(o)o[d.f]=v}
   else if(d.set==='addModel'){const m=db.models.find(x=>x.id===v),c=owner('course',d.owner);if(m&&c)c.items.push(...strip(m.items));if(m)toast('Produits ajoutés')}
-  else if(d.set==='prod'){const pr=(db.products||[]).find(x=>x.id===d.owner);if(pr)pr[d.f]=v}
+  else if(d.set==='prod'){const pr=(db.products||[]).find(x=>x.id===d.owner);if(pr)pr[d.f]=d.f==='ref'?num(v):v}
+  else if(d.set==='productQ'){ui.productQ=v}
+  else if(d.set==='productSort'){ui.productSort=v}
   else if(d.set==='cq'){ui.catQ=v}
   else if(d.set==='rpt'){ui.rpt[d.f]=v}
   else if(d.set==='filter'){ui.filter[d.f]=v}
@@ -416,12 +517,22 @@ function setField(el){
 }
 function render(){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.tab));
-  const V={accueil:vAccueil,courses:vCourses,modeles:vModeles,historique:vHistorique,budget:vBudget,stocks:vStocks,catalogue:vCatalogue,rapports:vRapports,reglages:vReglages};
-  $('#app').innerHTML=bannerBackup()+V[ui.tab]();
+  document.querySelectorAll('.side-link').forEach(b=>b.classList.toggle('active',b.dataset.v===ui.tab));
+  const V={accueil:vAccueil,courses:vCourses,modeles:vModeles,historique:vHistorique,budget:vBudget,stocks:vStocks,catalogue:vCatalogue,rapports:vRapports,guide:vGuide,reglages:vReglages};
+  try{
+    if(typeof V[ui.tab]!=='function')throw new Error('Vue inconnue : '+ui.tab);
+    $('#app').innerHTML=bannerBackup()+V[ui.tab]();
+    if(ui.tab==='reglages')madaCloudRenderSecureLabel();
+    applyBranding();
+  }catch(error){
+    console.error('Mada Courses render error',error);
+    $('#app').innerHTML='<div class="card warn"><h2>Erreur d’affichage</h2><p>La vue « '+esc(ui.tab)+' » n’a pas pu être affichée.</p><p class="muted">'+esc(error?.message||String(error))+'</p><button class="pri" data-act="tab" data-v="accueil">Retour Accueil</button><button data-act="tab" data-v="reglages">Réglages</button></div>';
+  }
 }
 
 /* ---------- événements ---------- */
 document.addEventListener('click',e=>{
+  const sec=e.target.closest('[data-sec]');if(sec){(async()=>{try{const action=sec.dataset.sec;if(action==='saveBrand'){const name=document.getElementById('appNameInput').value.trim();if(!name)throw Error('Nom obligatoire.');db.settings.appName=name.slice(0,32);const file=document.getElementById('brandPhotoInput').files[0];if(file)await new Promise((resolve,reject)=>{if(!/^image\/(png|jpeg|webp)$/.test(file.type)||file.size>2*1024*1024)return reject(Error('Image invalide : 2 Mo maximum.'));const r=new FileReader();r.onerror=()=>reject(Error('Lecture impossible'));r.onload=()=>{db.settings.brandPhoto=String(r.result);resolve()};r.readAsDataURL(file)});save();applyBranding();toast('Personnalisation enregistrée.')}else if(action==='clearBrand'){db.settings.brandPhoto='';save();applyBranding();toast('Photo réinitialisée.')}else if(action==='savePin'){const a=document.getElementById('pinNew').value,b=document.getElementById('pinConfirm').value;if(!/^\d{4,8}$/.test(a)||a!==b)throw Error('PIN invalide ou confirmation différente.');db.settings.pinSalt=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();db.settings.pinHash=await pinDigest(a,db.settings.pinSalt);db.settings.pinEnabled=true;save();toast('PIN activé.')}else if(action==='disablePin'){db.settings.pinEnabled=false;db.settings.biometricEnabled=false;save();toast('Verrouillage désactivé.')}else if(action==='testBiometric'){if(!db.settings.pinHash)throw Error('Configure d’abord un PIN.');if(window.AndroidBridge?.authenticateBiometric)AndroidBridge.authenticateBiometric();else toast('Biométrie disponible uniquement dans l’application Android.')} }catch(err){toast(err.message||'Erreur de sécurité.')}})();return;}
   const el=e.target.closest('[data-act]');
   if(!el)return;
   act(el.dataset.act,el.dataset);
@@ -429,15 +540,101 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('change',e=>{
   if(e.target.dataset&&e.target.dataset.set)setField(e.target);
+  if(e.target.id==='pinEnabled'){if(e.target.checked&&!db.settings.pinHash){e.target.checked=false;toast('Crée d’abord un PIN.')}else{db.settings.pinEnabled=e.target.checked;save()}}
+  if(e.target.id==='biometricEnabled'){if(e.target.checked&&!db.settings.pinHash){e.target.checked=false;toast('Configure d’abord un PIN avant la biométrie.')}else{db.settings.biometricEnabled=e.target.checked;save()}}
+  if(e.target.id==='brandPhotoInput'&&e.target.files[0])applyBrandPhoto(e.target.files[0]);
+});
+document.addEventListener('input',e=>{
+ const el=e.target;if(el.matches('[data-set="item"][data-f="qty"],[data-set="item"][data-f="price"]')){const id=el.dataset.iid,o=owner(el.dataset.kind,el.dataset.owner),it=o?.items.find(x=>x.id===id);if(it){const q=num(document.querySelector('[data-iid="'+id+'"][data-f="qty"]')?.value??it.qty),p=num(document.querySelector('[data-iid="'+id+'"][data-f="price"]')?.value??it.price??0),b=!!document.querySelector('[data-iid="'+id+'"][data-f="bought"]')?.checked,total=document.querySelector('[data-line-total="'+id+'"]');if(total)total.textContent=money(b?q*p:0)}}
+ if(el.id==='n_name'){const p=(db.products||[]).find(x=>x.name.toLocaleLowerCase('fr')===el.value.trim().toLocaleLowerCase('fr'));if(p){$('#n_unit').value=p.unit;$('#n_est').value=p.ref||0;$('#n_cat').value=p.cat;$('#productMatchHint').textContent='Produit existant reconnu : '+p.name}else if($('#productMatchHint'))$('#productMatchHint').textContent='Saisie libre.'}
 });
 
-document.addEventListener('change',e=>{if(e.target.id!=='imp'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o||!Array.isArray(o.courses)||!Array.isArray(o.models)||!o.courses.every(c=>Array.isArray(c.items)))throw new Error('format');o.stocks=o.stocks||[];o.shops=o.shops||[];o.cats=o.cats||CATS.slice();o.remises=o.remises||[];o.settings=o.settings||{budgetMensuel:0};db=o;ui.courseId=null;ui.modelId=null;save();render();toast('Restauration r\u00e9ussie')}catch(err){toast('Fichier invalide : restauration annul\u00e9e')}};r.readAsText(e.target.files[0])});
+document.addEventListener('change',e=>{
+  if(e.target.id!=='imp'||!e.target.files||!e.target.files[0])return;
+  const file=e.target.files[0];
+  if(file.size>10*1024*1024){toast('Sauvegarde trop volumineuse (maximum 10 Mo)');e.target.value='';return}
+  if(!confirm('Restaurer cette sauvegarde ? Les données actuelles seront remplacées. Téléchargez une sauvegarde de sécurité avant de continuer.')){e.target.value='';return}
+  const reader=new FileReader();
+  reader.onerror=()=>toast('Lecture du fichier impossible');
+  reader.onload=()=>{
+    try{
+      const imported=JSON.parse(String(reader.result||''));
+      const isObj=v=>v&&typeof v==='object'&&!Array.isArray(v);
+      const arrays=['courses','models','stocks','shops','remises'];
+      if(!isObj(imported)||!Array.isArray(imported.courses)||!Array.isArray(imported.models))throw new Error('Structure de sauvegarde invalide');
+      for(const key of arrays)if(imported[key]!==undefined&&!Array.isArray(imported[key]))throw new Error('Rubrique invalide : '+key);
+      if(!imported.courses.every(c=>isObj(c)&&Array.isArray(c.items))||!imported.models.every(m=>isObj(m)&&Array.isArray(m.items)))throw new Error('Contenu des courses ou modèles invalide');
+      const defaults=seed();
+      const restored={...defaults,...imported};
+      restored.settings={...defaults.settings,...(isObj(imported.settings)?imported.settings:{})};
+      restored.stocks=Array.isArray(imported.stocks)?imported.stocks:[];
+      restored.shops=Array.isArray(imported.shops)?imported.shops:[];
+      restored.remises=Array.isArray(imported.remises)?imported.remises:[];
+      restored.cats=Array.isArray(imported.cats)?imported.cats:CATS.slice();
+      restored.products=Array.isArray(imported.products)?imported.products:[];
+      const before=localStorage.getItem(KEY);
+      try{localStorage.setItem(KEY,JSON.stringify(restored));db=restored;localStorage.setItem(LS,'0');save();}
+      catch(storageError){if(before===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,before);throw new Error('Espace de stockage insuffisant : données précédentes conservées');}
+      ui.courseId=null;ui.modelId=null;ui.updFor=null;ui.tab='accueil';render();toast('Restauration terminée : données importées et enregistrées');
+    }catch(err){toast(err.message||'Fichier invalide : restauration annulée')}
+    finally{e.target.value=''}
+  };
+  reader.readAsText(file);
+});
 document.addEventListener('change',e=>{if(e.target.id!=='n_prod')return;const pr=(db.products||[]).find(x=>x.id===e.target.value);if(!pr)return;$('#n_name').value=pr.name;$('#n_unit').value=pr.unit;$('#n_cat').value=pr.cat;$('#n_est').value=pr.ref||''});
+
+/* ---------- AppForge V3 / D1 / R2 ---------- */
+const MADA_CLOUD_API='https://appforge-license-api.lalainaadclick.workers.dev';
+const MADA_CLOUD_PRODUCT='MADACOURSES';
+const MADA_CLOUD_INSTALL_KEY='madaCourses.cloud.installation.v1';
+const MADA_CLOUD_RECORD_KEY='madaCourses.cloud.entitlement.v1';
+const madaSecure=window.AppForgeNativeStorage;
+const madaStore={
+ get:async key=>madaSecure?madaSecure.get(key):localStorage.getItem(key),
+ set:async(key,value)=>{if(madaSecure){if(!madaSecure.set(key,value))throw Error('Écriture du stockage Android protégé impossible.')}else localStorage.setItem(key,value)},
+ remove:async key=>{if(madaSecure)madaSecure.remove(key);else localStorage.removeItem(key)}
+};
+function madaCloudMessage(message,error=false){const el=document.getElementById('madaCloudStatus');if(el){el.textContent=message;el.style.borderColor=error?'var(--danger)':'var(--line)';el.style.color=error?'var(--danger)':''}}
+async function madaCloudRequest(path,options={},token=''){const headers={...(options.body?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{}),...(options.headers||{})};let response;if(window.AndroidBridge&&typeof AndroidBridge.requestNetwork==='function'){const raw=AndroidBridge.requestNetwork(MADA_CLOUD_API+path,options.method||'GET',JSON.stringify(headers),options.body||'');let nativeResult;try{nativeResult=JSON.parse(raw)}catch{throw Error('Transport Android : réponse native invalide')}if(!nativeResult.ok)throw Error(nativeResult.error||'Transport réseau Android échoué');response={ok:nativeResult.status>=200&&nativeResult.status<300,status:nativeResult.status,json:async()=>nativeResult.body||{},headers:{get:()=>nativeResult.contentType||''}};const data=nativeResult.body||{};if(!response.ok){const err=Error(data.error||'Worker AppForge HTTP '+response.status);err.status=response.status;throw err}return{data,response}}else{response=await fetch(MADA_CLOUD_API+path,{...options,headers,cache:'no-store'});const data=await response.json().catch(()=>({}));if(!response.ok){const err=Error(data.error||'Worker AppForge HTTP '+response.status);err.status=response.status;throw err}return{data,response}}}
+
+function madaBytesToBase64(bytes){let binary='';const chunk=8192;for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,i+chunk));return btoa(binary)}
+function madaBase64ToBytes(value){const binary=atob(value||'');const out=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)out[i]=binary.charCodeAt(i);return out}
+async function madaNativeBinaryRequest(url,method,headers,bytes){if(window.AndroidBridge&&typeof AndroidBridge.requestBinary==='function'){const encoded=bytes?madaBytesToBase64(bytes):'';const raw=AndroidBridge.requestBinary(url,method,JSON.stringify(headers||{}),encoded);let result;try{result=JSON.parse(raw)}catch{throw Error('Transport Android binaire : réponse native invalide')}if(!result.ok)throw Error(result.error||'Transport binaire Android échoué');return{ok:result.status>=200&&result.status<300,status:result.status,headers:{get:name=>name.toLowerCase()==='x-appforge-sha256'?result.sha256Header||'':name.toLowerCase()==='content-type'?result.contentType||'':''},arrayBuffer:async()=>madaBase64ToBytes(result.bodyBase64).buffer,json:async()=>{const bytes=madaBase64ToBytes(result.bodyBase64);return JSON.parse(new TextDecoder().decode(bytes))}}}const response=await fetch(url,{method,headers,body:bytes,cache:'no-store'});return response}
+
+async function madaSecureStorageSelfTest(){if(!madaSecure||typeof madaSecure.get!=='function'||typeof madaSecure.set!=='function'){if(window.AndroidBridge)throw Error('Pont Android détecté mais stockage sécurisé AppForgeNativeStorage absent. Mets à jour/réinstalle l’APK; aucun appel de licence n’a été envoyé.');return{secure:false,ok:true,detail:'Mode HTML localStorage'}};const key='madaCourses.cloud.selftest.v1',value='check-'+Date.now();if(madaSecure.set(key,value)!==true)throw Error('Le stockage Android Keystore a refusé l’écriture du test.');const read=madaSecure.get(key);madaSecure.remove(key);if(read!==value)throw Error('Le stockage Android sécurisé n’a pas restitué la valeur test.');return{secure:true,ok:true,detail:'AES-GCM / Android Keystore validé'} }
+async function madaInstallationId(){let id=await madaStore.get(MADA_CLOUD_INSTALL_KEY);if(!id){id=crypto.randomUUID?crypto.randomUUID():Array.from(crypto.getRandomValues(new Uint8Array(24)),x=>x.toString(16).padStart(2,'0')).join('');await madaStore.set(MADA_CLOUD_INSTALL_KEY,id)}return id}
+async function madaCloudRecord(){const raw=await madaStore.get(MADA_CLOUD_RECORD_KEY);if(!raw)return null;try{return JSON.parse(raw)}catch{throw Error('Les informations de licence Cloud locales sont illisibles. Les données métier restent intactes.')}}
+async function madaSaveCloudRecord(record){await madaStore.set(MADA_CLOUD_RECORD_KEY,JSON.stringify(record))}
+async function madaActivateLicense(){const field=document.getElementById('madaLicenseCode'),code=String(field?.value||'').trim().toUpperCase();if(code.length<12||code.length>80)throw Error('Saisis un code de licence valide (12 à 80 caractères).');await madaSecureStorageSelfTest();madaCloudMessage('Vérification et activation de la licence…');const installationId=await madaInstallationId();const {data}=await madaCloudRequest('/v1/activate',{method:'POST',body:JSON.stringify({productId:MADA_CLOUD_PRODUCT,code,installationId})});if(!data.token||!data.cloudAccess?.token)throw Error('Réponse Worker incomplète : jeton licence ou Cloud manquant.');await madaSaveCloudRecord({version:1,productId:MADA_CLOUD_PRODUCT,installationId,licenseToken:data.token,cloudToken:data.cloudAccess.token,cloudExpiresAt:data.cloudAccess.expiresAt||null,activatedAt:new Date().toISOString(),expiresAt:data.expiresAt||null,kind:'license'});if(field)field.value='';madaCloudMessage('Licence activée. Vérification du statut et Cloud…');await madaCloudQuota();return data}
+async function madaStartTrial(){await madaSecureStorageSelfTest();madaCloudMessage('Demande de l’essai 72 h au Worker…');const installationId=await madaInstallationId();const {data}=await madaCloudRequest('/v1/trial',{method:'POST',body:JSON.stringify({productId:MADA_CLOUD_PRODUCT,installationId})});if(!data.token||!data.cloudAccess?.token)throw Error('Réponse Worker incomplète : jeton d’essai ou Cloud manquant.');await madaSaveCloudRecord({version:1,productId:MADA_CLOUD_PRODUCT,installationId,licenseToken:data.token,cloudToken:data.cloudAccess.token,cloudExpiresAt:data.cloudAccess.expiresAt||null,startedAt:data.startedAt,expiresAt:data.expiresAt,kind:'trial'});madaCloudMessage('Essai enregistré. Vérification du statut Cloud…');await madaCloudQuota();return data}
+async function madaCloudToken(force=false){const record=await madaCloudRecord();if(!record?.licenseToken)throw Error('Active d’abord l’essai 72 h ou une licence AppForge.');const installationId=await madaInstallationId();const {data:status}=await madaCloudRequest('/v1/status',{method:'POST',body:JSON.stringify({productId:MADA_CLOUD_PRODUCT,token:record.licenseToken,installationId})});if(!status.active)throw Error(status.error||'Licence ou essai inactif.');if(!force&&record.cloudToken&&Date.parse(record.cloudExpiresAt||'')>Date.now()+60000)return record.cloudToken;const {data}=await madaCloudRequest('/v1/cloud/token',{method:'POST',body:JSON.stringify({productId:MADA_CLOUD_PRODUCT,installationId,licenseToken:record.licenseToken})});if(!data.token)throw Error('Renouvellement du jeton Cloud refusé.');record.cloudToken=data.token;record.cloudExpiresAt=data.expiresAt||null;await madaSaveCloudRecord(record);return data.token}
+function madaCloudSnapshot(){return{schema:1,appId:'mada-courses',data:JSON.parse(JSON.stringify(db))}}
+async function madaReadCloudSnapshot(){const token=await madaCloudToken();const {data}=await madaCloudRequest('/v1/cloud/snapshot?resource=default',{},token);const size=data.snapshot?new TextEncoder().encode(JSON.stringify(data.snapshot)).length:0;madaCloudMessage(data.snapshot?'Sauvegarde Cloud trouvée · révision '+data.revision+' · '+Math.ceil(size/1024)+' Ko.':'Aucune sauvegarde Cloud. La copie locale est intacte.');return{token,...data}}
+async function madaPushCloud(){const {token,...remote}=await madaReadCloudSnapshot();const local=madaCloudSnapshot();if(remote.snapshot&&!confirm('Une sauvegarde Cloud existe déjà (révision '+remote.revision+'). Remplacer cette copie par les données locales ? Aucune fusion automatique ne sera effectuée.'))return;if(new TextEncoder().encode(JSON.stringify(local)).length>440000)throw Error('Sauvegarde supérieure à 440 Ko. Réduis les données avant l’envoi.');const {data}=await madaCloudRequest('/v1/cloud/snapshot?resource=default',{method:'PUT',body:JSON.stringify({expectedRevision:Number(remote.revision||0),snapshot:local})},token);madaCloudMessage('Sauvegarde D1 envoyée avec succès · révision '+data.revision+'.');}
+async function madaRestoreCloud(){const {token,...remote}=await madaReadCloudSnapshot();if(!remote.snapshot)throw Error('Aucune sauvegarde Cloud disponible.');if(remote.snapshot.schema!==1||remote.snapshot.appId!=='mada-courses'||!remote.snapshot.data||typeof remote.snapshot.data!=='object'||Array.isArray(remote.snapshot.data))throw Error('Format de sauvegarde Cloud non reconnu.');if(!confirm('Restaurer la sauvegarde Cloud ? Une copie locale de sécurité sera téléchargée avant le remplacement.'))return;download('mada-courses-before-cloud-restore-'+iso()+'.json','application/json',JSON.stringify(db,null,2));const restored=remote.snapshot.data;if(!Array.isArray(restored.courses)||!Array.isArray(restored.models))throw Error('Données Cloud invalides : courses ou modèles absents.');localStorage.setItem(KEY,JSON.stringify(restored));db=load();ui.courseId=null;ui.modelId=null;ui.tab='accueil';save();render();madaCloudMessage('Restauration terminée. Copie locale de sécurité téléchargée.');}
+async function madaR2Smoke(){const token=await madaCloudToken();const fileId='mada-courses-r2-smoke';const {data:list}=await madaCloudRequest('/v1/cloud/files',{},token);const old=(list.items||[]).find(x=>x.fileId===fileId);const expected=Number(old?.revision||0);const bytes=new TextEncoder().encode(JSON.stringify({test:'Mada Courses R2',productId:MADA_CLOUD_PRODUCT,at:new Date().toISOString(),nonce:crypto.randomUUID?crypto.randomUUID():String(Date.now())}));const sha=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',value)),x=>x.toString(16).padStart(2,'0')).join('');const localHash=await sha(bytes);const put=await madaNativeBinaryRequest(MADA_CLOUD_API+'/v1/cloud/file?fileId='+encodeURIComponent(fileId),'PUT',{Authorization:'Bearer '+token,'X-AppForge-Expected-Revision':String(expected),'Content-Type':'application/octet-stream'},bytes);const saved=await put.json().catch(()=>({}));if(!put.ok)throw Error(saved.error||'Upload R2 HTTP '+put.status);const get=await madaNativeBinaryRequest(MADA_CLOUD_API+'/v1/cloud/file?fileId='+encodeURIComponent(fileId),'GET',{Authorization:'Bearer '+token},null);if(!get.ok)throw Error('Téléchargement R2 HTTP '+get.status);const received=new Uint8Array(await get.arrayBuffer()),downloadHash=await sha(received),headerHash=get.headers.get('X-AppForge-SHA256');if(localHash!==downloadHash||localHash!==headerHash||saved.sha256!==localHash)throw Error('Contrôle SHA-256 incorrect après téléchargement.');madaCloudMessage('Test R2 réussi : upload, téléchargement et SHA-256 identiques · révision '+saved.revision+'.');}
+async function madaR2UploadSelectedFile(){const input=document.getElementById('madaR2File'),file=input?.files?.[0];if(!file)throw Error('Choisis d’abord un fichier à envoyer.');const maxBytes=10*1024*1024;if(file.size<=0)throw Error('Le fichier est vide.');if(file.size>maxBytes)throw Error('Fichier trop volumineux : limite 10 Mio.');const token=await madaCloudToken(),installationId=await madaInstallationId();const safeInstall=installationId.replace(/[^A-Za-z0-9_-]/g,'').slice(0,18)||'device';const fileId='mada-file-test-'+safeInstall;const {data:list}=await madaCloudRequest('/v1/cloud/files',{},token);const existing=(list.items||[]).find(x=>x.fileId===fileId);const expectedRevision=Number(existing?.revision||0);madaCloudMessage('Calcul SHA-256 et envoi du fichier « '+file.name+' »…');const bytes=await file.arrayBuffer();const sha=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',value)),x=>x.toString(16).padStart(2,'0')).join('');const localHash=await sha(bytes);const put=await madaNativeBinaryRequest(MADA_CLOUD_API+'/v1/cloud/file?fileId='+encodeURIComponent(fileId),'PUT',{Authorization:'Bearer '+token,'X-AppForge-Expected-Revision':String(expectedRevision),'Content-Type':'application/octet-stream'},bytes);const saved=await put.json().catch(()=>({}));if(!put.ok)throw Error(saved.error||'Upload R2 HTTP '+put.status);const get=await madaNativeBinaryRequest(MADA_CLOUD_API+'/v1/cloud/file?fileId='+encodeURIComponent(fileId),'GET',{Authorization:'Bearer '+token},null);if(!get.ok)throw Error('Téléchargement R2 HTTP '+get.status);const received=await get.arrayBuffer(),downloadHash=await sha(received),headerHash=get.headers.get('X-AppForge-SHA256');if(localHash!==downloadHash||localHash!==headerHash||saved.sha256!==localHash)throw Error('Échec du contrôle SHA-256 : le fichier téléchargé ne correspond pas à l’original.');const blob=new Blob([received],{type:file.type||'application/octet-stream'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=file.name;link.style.display='none';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);madaCloudMessage('Test R2 réussi : « '+file.name+' » · '+file.size.toLocaleString('fr-FR')+' octets · upload + téléchargement vérifiés · SHA-256 identique · révision '+saved.revision+'. Le fichier téléchargé est enregistré dans les Téléchargements sur Android.');await madaCloudQuota();}
+async function madaCloudQuota(){const token=await madaCloudToken();const {data}=await madaCloudRequest('/v1/cloud/quota',{},token);const d=data.d1||{},r=data.r2||{};const box=document.getElementById('madaCloudQuota');if(box)box.innerHTML='<div class="kpi"><small>D1 utilisé / max.</small><b>'+Number(d.usedBytes||0).toLocaleString('fr-FR')+' / '+Number(d.maxBytes||0).toLocaleString('fr-FR')+' o</b></div><div class="kpi"><small>R2 fichiers</small><b>'+Number(r.fileCount||0)+' / '+Number(r.maxFiles||0)+'</b></div><div class="kpi"><small>R2 utilisé / max.</small><b>'+Number(r.usedBytes||0).toLocaleString('fr-FR')+' / '+Number(r.maxBytes||0).toLocaleString('fr-FR')+' o</b></div>';madaCloudMessage('Quotas actualisés depuis le Worker. R2 '+(r.available?'disponible':'indisponible')+'.');}
+document.addEventListener('click',e=>{const button=e.target.closest('[data-cloud]');if(!button)return;const action=button.dataset.cloud;button.disabled=true;Promise.resolve().then(async()=>{if(action==='activate')await madaActivateLicense();else if(action==='trial')await madaStartTrial();else if(action==='read')await madaReadCloudSnapshot();else if(action==='push')await madaPushCloud();else if(action==='restore')await madaRestoreCloud();else if(action==='r2')await madaR2Smoke();else if(action==='upload-file')await madaR2UploadSelectedFile();else if(action==='quota')await madaCloudQuota()}).catch(error=>madaCloudMessage(error.message||'Erreur Cloud inconnue.',true)).finally(()=>{button.disabled=false})});
+function applyBranding(){const title=document.getElementById('brandTitle'),mark=document.getElementById('brandMark');if(title)title.textContent=db.settings.appName||'MADA COURSES';if(mark){const photo=db.settings.brandPhoto;if(photo){mark.innerHTML='<img alt="Logo" src="'+photo+'">';mark.classList.add('has-photo')}else{mark.textContent='🛒';mark.classList.remove('has-photo')}}}
+async function pinDigest(pin,salt){const enc=new TextEncoder(),key=await crypto.subtle.importKey('raw',enc.encode(pin),'PBKDF2',false,['deriveBits']),bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:210000,hash:'SHA-256'},key,256);return Array.from(new Uint8Array(bits),b=>b.toString(16).padStart(2,'0')).join('')}
+function showPinLock(){if(!db.settings.pinEnabled||!db.settings.pinHash)return;const el=document.getElementById('pinLock');if(el){el.hidden=false;const bio=document.getElementById('unlockBioBtn');if(bio)bio.hidden=!db.settings.biometricEnabled}}
+async function verifyPin(){const input=document.getElementById('unlockPin'),msg=document.getElementById('pinError');try{if(await pinDigest(input.value,db.settings.pinSalt)===db.settings.pinHash){document.getElementById('pinLock').hidden=true;input.value='';msg.textContent=''}else{msg.textContent='Code incorrect';input.value=''}}catch(e){msg.textContent='Vérification indisponible.'}}
+window.onBiometricResult=ok=>{if(ok){const lock=document.getElementById('pinLock');if(lock)lock.hidden=true;const err=document.getElementById('pinError');if(err)err.textContent=''}else{const err=document.getElementById('pinError');if(err)err.textContent='Authentification biométrique non validée.'}};
+function applyBrandPhoto(file){if(!file)return;if(!/^image\/(png|jpeg|webp)$/.test(file.type)||file.size>2*1024*1024){toast('Image invalide : JPEG, PNG ou WebP, 2 Mo maximum.');return}const r=new FileReader();r.onerror=()=>toast('Lecture de la photo impossible');r.onload=()=>{db.settings.brandPhoto=String(r.result);save();applyBranding();toast('Photo d’accueil enregistrée.')}}
+function madaCloudRenderSecureLabel(){const label=document.getElementById('madaCloudSecure');if(!label)return;const native=!!(madaSecure&&typeof madaSecure.get==='function'&&typeof madaSecure.set==='function');label.textContent=native?'Stockage protégé Android : AES-GCM / Android Keystore (testé avant activation).':'Mode HTML : localStorage (non chiffré).';}
+
 /* ---------- démarrage ---------- */
-$('#nav').innerHTML=TABS.map(([k,ic,l])=>`<button data-act="tab" data-v="${k}"><span>${ic}</span>${l}</button>`).join('');
+const PRIMARY=TABS.filter(x=>['accueil','courses','budget'].includes(x[0]));
+$('#nav').innerHTML=PRIMARY.map(([k,ic,l])=>`<button data-act="tab" data-v="${k}"><span>${ic}</span>${l}</button>`).join('');
+$('#sideLinks').innerHTML=TABS.concat([['reglages','⚙','Réglages']]).map(([k,ic,l])=>`<button class="side-link" data-act="tab" data-v="${k}"><span class="side-icon">${ic}</span><span>${l}</span></button>`).join('');
 $('#units').innerHTML=UNITS.map(u=>`<option value="${u}">`).join('');
 save();
 render();
+applyBranding();
+document.getElementById('unlockPinBtn').addEventListener('click',verifyPin);
+document.getElementById('unlockPin').addEventListener('keydown',e=>{if(e.key==='Enter')verifyPin()});
+showPinLock();
 </script>
 </body>
 </html>
