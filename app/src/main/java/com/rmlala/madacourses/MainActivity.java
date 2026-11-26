@@ -244,6 +244,7 @@ public class MainActivity extends FragmentActivity {
                 if (verb.equals("PUT") && bodyBase64 != null && !bodyBase64.isEmpty()) {
                     conn.setDoOutput(true);
                     byte[] bytes = Base64.decode(bodyBase64, Base64.DEFAULT);
+                    if (bytes.length > 10 * 1024 * 1024) return new JSONObject().put("ok", false).put("error", "Fichier trop volumineux (limite 10 Mio)").toString();
                     try (OutputStream os = conn.getOutputStream()) { os.write(bytes); }
                 }
                 int status = conn.getResponseCode();
@@ -256,6 +257,7 @@ public class MainActivity extends FragmentActivity {
                         received = out.toByteArray();
                     }
                 }
+                if (received.length > 10 * 1024 * 1024) return new JSONObject().put("ok", false).put("error", "Réponse R2 trop volumineuse (limite 10 Mio)").toString();
                 String hashHeader = conn.getHeaderField("X-AppForge-SHA256");
                 return new JSONObject().put("ok", true).put("status", status)
                         .put("contentType", conn.getContentType())
