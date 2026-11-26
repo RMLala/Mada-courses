@@ -134,7 +134,7 @@ nav button.on{font-weight:800}
  .catalog-tools{grid-template-columns:1fr}
  header .menu-trigger,header .header-settings{width:40px;height:40px}
 }
-</style>
+.kpi-link{cursor:pointer;transition:transform .12s,box-shadow .12s}.kpi-link:active{transform:scale(.985)}.kpi-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}</style>
 </head>
 <body>
 <header class="app-header"><button class="menu-trigger" type="button" aria-label="Ouvrir le menu" data-act="menuToggle">☰</button><div class="brand-mark" id="brandMark">🛒</div><div class="brand-copy"><h1 id="brandTitle">MADA COURSES</h1><small>Gestion du foyer · Premium</small></div><button class="header-settings" type="button" aria-label="Réglages" data-act="tab" data-v="reglages">⚙</button></header>
@@ -171,7 +171,7 @@ const spent=items=>items.reduce((s,i)=>s+(i.bought&&i.price!=null?i.qty*i.price:
 const estimated=items=>items.reduce((s,i)=>s+i.qty*i.est,0);
 const lines=cs=>cs.flatMap(c=>c.items.filter(i=>i.bought&&i.price!=null).map(i=>({c,i,amt:i.qty*i.price})));
 const sumBy=(arr,f)=>{const m={};arr.forEach(x=>{const k=f(x)||'—';m[k]=(m[k]||0)+x.amt});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
-const kpi=(label,value)=>`<div class="kpi"><small>${label}</small><b>${value}</b></div>`;
+const kpi=(label,value,target='')=>{const t=target||(/budget|solde|recettes|remis/i.test(label)?'budget':/dépensé|achat|course|catégorie|moyenne|total/i.test(label)?'rapports':'');return `<div class="kpi ${t?'kpi-link':''}" ${t?'role="button" tabindex="0" data-act="tab" data-v="'+t+'"':''}><small>${label}${t?' · ↗':''}</small><b>${value}</b></div>`};
 const bars=(en,tot)=>en.length?en.map(([k,v])=>{const p=tot?Math.round(v/tot*100):0;return `<div class="row"><div class="grow">${esc(k)}<div class="bar"><i style="width:${p}%"></i></div></div><b>${money(v)}</b><small class="muted">${p}%</small></div>`}).join(''):'<div class="empty">Aucune dépense</div>';
 const monthRange=off=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+off);const y=d.getFullYear(),m=d.getMonth();return{from:ymd(new Date(y,m,1)),to:ymd(new Date(y,m+1,0))}};
 
