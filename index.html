@@ -255,7 +255,7 @@ input,select,textarea{background:var(--bg)!important;color:var(--text)!important
 .mc-product-fields .mc-fields-row input{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;height:44px!important;min-height:44px!important;box-sizing:border-box!important;padding:7px 6px!important;font-size:14px!important;margin:0!important}
 .mc-product-delete{display:inline-flex!important;width:auto!important;min-width:0!important;min-height:34px!important;height:auto!important;margin:9px 0 0 auto!important;padding:5px 10px!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
 @media(max-width:380px){.mc-product-card{padding:9px!important}.mc-product-head{gap:6px!important}.mc-product-text b{font-size:14px!important}.mc-product-amount{font-size:13px!important}.mc-product-fields .mc-fields-row{gap:4px!important}.mc-product-fields .mc-fields-row input{padding:5px 3px!important;font-size:12px!important}}
-</style>
+.qc-overlay{position:fixed;inset:0;z-index:60;background:#0008;display:flex;align-items:center;justify-content:center;padding:16px}.qc-card{background:var(--card);color:var(--text);width:min(460px,100%);max-height:90vh;overflow:auto;padding:20px;border-radius:16px;border:1px solid var(--line)}.qc-card label{display:block;margin:12px 0}.qc-card input,.qc-card select{width:100%;padding:12px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px}.qc-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}</style>
 </head>
 <body>
 <header class="app-header"><button class="menu-trigger" type="button" aria-label="Ouvrir le menu" data-act="menuToggle">☰</button><div class="brand-mark" id="brandMark">🛒</div><div class="brand-copy"><h1 id="brandTitle">MADA COURSES</h1><small>Gestion du foyer · Premium</small></div><button class="header-settings" type="button" aria-label="Réglages" data-act="tab" data-v="reglages">⚙</button></header>
@@ -315,7 +315,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(db));autoSnap()}catc
 /* ---------- état ---------- */
 let db=load();
 let pending=null;
-let ui={tab:'accueil',courseId:null,modelId:null,updFor:null,catQ:'',filter:{period:'',place:''},rpt:monthRange(0)};
+let ui={tab:'accueil',courseId:null,modelId:null,updFor:null,catQ:'',filter:{period:'',place:''},rpt:monthRange(0),quickProduct:null,quickModel:null};
 let tt;
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
 function sure(key){if(pending===key){pending=null;return true}pending=key;toast('Touchez à nouveau pour confirmer');setTimeout(()=>{if(pending===key)pending=null},4000);return false}
@@ -337,8 +337,8 @@ function itemRow(i,kind,owner){
  return `<div class="mc-product-card"><div class="mc-product-head"><div class="mc-product-title">${check}<div class="mc-product-text"><b>${esc(i.name)}</b><span>${esc(i.cat)} · ${esc(i.unit)}</span></div></div><div class="mc-product-amount">${total||''}</div></div><div class="mc-product-fields">${fields.replace('class="fields-row"','class="mc-fields-row"')}</div><button class="sm dng delete-item mc-product-delete" aria-label="Supprimer ${esc(i.name)}" data-act="delItem" ${dd}>✕ Supprimer</button></div>`;
 }
 function addForm(kind,id){
- const opts=(db.products||[]).map(p=>`<option value="${esc(p.name)}"></option>`).join('');
- return `<div class="product-add"><label class="lbl">Produit — rechercher dans le catalogue<input id="n_name" list="productNames" autocomplete="off" placeholder="Rechercher ou saisir un produit"><button type="button" data-act="newProductFromSelection" data-owner="${id}">＋ Nouveau produit</button><datalist id="productNames">${opts}</datalist></label><div class="add"><label class="price-field"><small>Quantité</small><input id="n_qty" type="number" min="0.01" step="any" value="1"></label><label class="price-field"><small>Unité</small><input id="n_unit" list="units" value="kg"></label><label class="price-field"><small>PU estimé</small><input id="n_est" type="number" min="0" step="any" placeholder="Prix unitaire"></label><select id="n_cat">${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><button class="pri" data-act="addItem" data-kind="${kind}" data-owner="${id}">Ajouter</button></div><p class="muted" id="productMatchHint">Le produit existant sera reconnu automatiquement.</p></div>`;
+ const opts=(db.products||[]).map(p=>'<option value="'+esc(p.name)+'"></option>').join('');
+ return '<div class="product-add"><label class="lbl">Produit — rechercher dans le catalogue<input id="n_name" list="productNames" autocomplete="off" placeholder="Rechercher ou saisir un produit"></label><datalist id="productNames">'+opts+'</datalist><button type="button" data-act="newProductFromSelection" data-owner="'+id+'">＋ Créer produit au catalogue</button><div class="add"><label class="price-field"><small>Quantité</small><input id="n_qty" type="number" min="0.01" step="any" value="1"></label><label class="price-field"><small>Unité</small><input id="n_unit" list="units" value="kg"></label><label class="price-field"><small>PU estimé</small><input id="n_est" type="number" min="0" step="any" placeholder="Prix unitaire"></label><select id="n_cat">'+cats().map(c=>'<option>'+esc(c)+'</option>').join('')+'</select><button class="pri" data-act="addItem" data-kind="'+kind+'" data-owner="'+id+'">Ajouter à la course</button></div><p class="muted" id="productMatchHint">Le produit existant sera reconnu automatiquement.</p></div>';
 }
 function vAccueil(){
   const t=iso(),m=t.slice(0,7);
@@ -583,8 +583,12 @@ function act(a,d){
       break;
     }
     case 'newModel': {const m={id:uid(),name:'Nouveau modèle',kind:'autre',notes:'',items:[]};db.models.push(m);ui.tab='modeles';ui.modelId=m.id;break}
-    case 'newModelForCourse': {const c=db.courses.find(x=>x.id===d.id);if(!c)break;const name=prompt('Nom du nouveau modèle :');if(!name||!name.trim())break;const m={id:uid(),name:name.trim(),kind:c.period||'autre',notes:'',items:[]};db.models.push(m);ui.courseId=c.id;toast('Modèle créé. Il est disponible dans la sélection.');break}
-    case 'newProductFromSelection': {const name=prompt('Nom du nouveau produit :');if(!name||!name.trim())break;const nm=name.trim();const existing=(db.products||[]).find(p=>p.name.toLocaleLowerCase('fr')===nm.toLocaleLowerCase('fr'));if(existing){$('#n_name').value=existing.name;toast('Produit déjà présent : sélectionné.');break}const cat=$('#n_cat')?.value||cats()[0],unit=$('#n_unit')?.value||'pièce',ref=num($('#n_est')?.value);const product={id:uid(),name:nm,cat,unit,ref};db.products=db.products||[];db.products.push(product);$('#n_name').value=nm;toast('Produit ajouté au catalogue. Complète les champs puis Ajouter.');ui.courseId=d.owner||ui.courseId;break}
+    case 'newModelForCourse': ui.quickModel={courseId:d.id};break
+    case 'newProductFromSelection': ui.quickProduct={courseId:d.owner};break
+    case 'quickCancel':ui.quickProduct=null;ui.quickModel=null;break
+    case 'quickSaveModel':{const nm=$('#qcModelName')?.value.trim(),c=db.courses.find(x=>x.id===ui.quickModel?.courseId);if(!nm||!c){toast('Nom obligatoire');break}db.models.push({id:uid(),name:nm,kind:c.period||'autre',notes:'',items:[]});ui.quickModel=null;toast('Modèle créé');break}
+    case 'quickSaveProduct':{const nm=$('#qcProductName')?.value.trim(),c=db.courses.find(x=>x.id===ui.quickProduct?.courseId);if(!nm||!c){toast('Nom obligatoire');break}db.products=db.products||[];let p=db.products.find(x=>x.name.toLocaleLowerCase('fr')===nm.toLocaleLowerCase('fr'));if(!p){p={id:uid(),name:nm,cat:$('#qcProductCat').value,unit:$('#qcProductUnit').value.trim()||'pièce',ref:num($('#qcProductPrice').value)};db.products.push(p)}c.items.push({id:uid(),pid:p.id,name:p.name,qty:1,unit:p.unit||'pièce',est:Number(p.ref)||0,cat:p.cat||cats()[0],price:null,bought:false});ui.quickProduct=null;toast('Produit créé et ajouté à la course');break}
+
     case 'openModel': ui.modelId=d.id;break;
     case 'closeModel': ui.modelId=null;break;
     case 'dupModel': {const m=db.models.find(x=>x.id===d.id);if(m){const n={...m,id:uid(),name:m.name+' (copie)',items:m.items.map(i=>({...i,id:uid()}))};db.models.push(n);ui.modelId=n.id}break}
@@ -640,13 +644,18 @@ function setField(el){
   else if(d.set==='filter'){ui.filter[d.f]=v}
   save();render();
 }
+function quickCreateModal(){
+ if(ui.quickModel)return '<div class="qc-overlay"><div class="qc-card"><h2>Nouveau modèle</h2><label>Nom du modèle<input id="qcModelName" maxlength="60" placeholder="Ex. Courses semaine"></label><div class="qc-actions"><button data-act="quickCancel">Annuler</button><button class="pri" data-act="quickSaveModel">Créer</button></div></div></div>';
+ if(ui.quickProduct)return '<div class="qc-overlay"><div class="qc-card"><h2>Nouveau produit</h2><p>Ajout au catalogue et à la course.</p><label>Nom<input id="qcProductName" maxlength="80"></label><label>Catégorie<select id="qcProductCat">'+cats().map(c=>'<option>'+esc(c)+'</option>').join('')+'</select></label><label>Unité<input id="qcProductUnit" value="pièce"></label><label>Prix estimé<input id="qcProductPrice" type="number" min="0" value="0"></label><div class="qc-actions"><button data-act="quickCancel">Annuler</button><button class="pri" data-act="quickSaveProduct">Créer et ajouter</button></div></div></div>';
+ return '';
+}
 function render(){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.tab));
   document.querySelectorAll('.side-link').forEach(b=>b.classList.toggle('active',b.dataset.v===ui.tab));
   const V={accueil:vAccueil,courses:vCourses,modeles:vModeles,historique:vHistorique,budget:vBudget,stocks:vStocks,catalogue:vCatalogue,rapports:vRapports,guide:vGuide,reglages:vReglages};
   try{
     if(typeof V[ui.tab]!=='function')throw new Error('Vue inconnue : '+ui.tab);
-    $('#app').innerHTML=bannerBackup()+V[ui.tab]();
+    $('#app').innerHTML=bannerBackup()+V[ui.tab]()+quickCreateModal();
     if(ui.tab==='reglages'){madaCloudRenderSecureLabel();madaRefreshLicenseStatus();madaRefreshBiometricCapability();}
     applyTheme();applyBranding();applyLanguage();
   }catch(error){
