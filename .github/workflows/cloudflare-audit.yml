@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - premium-finalisation-20261123
+      - premium-fix-1.6.2-ui-themes-mg-20261127
   pull_request:
     branches:
       - android-build
