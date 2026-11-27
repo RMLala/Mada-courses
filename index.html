@@ -222,6 +222,22 @@ input,select,textarea{background:var(--bg)!important;color:var(--text)!important
 .product-line .delete-item{display:block!important;width:auto!important;min-width:0!important;max-width:100%!important;height:32px!important;min-height:32px!important;align-self:flex-end!important;margin:8px 0 0 auto!important;padding:3px 10px!important;font-size:12px!important;border-radius:9px!important}
 .product-line .line-total-wrap{display:none!important}
 @media(max-width:360px){.product-line{padding:9px!important}.product-line .fields-row{gap:4px!important}.product-line .fields-row input{padding:5px 3px!important;font-size:12px!important}.product-line .check-title .grow b{font-size:14px!important}.product-line .product-total{font-size:13px!important}}
+/* ALIGNMENT FIX — explicit actual DOM classes; product name and total share header row */
+.product-line{display:block!important;width:100%!important;box-sizing:border-box!important}
+.product-line .product-top{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;column-gap:8px!important;width:100%!important;margin:0 0 9px!important}
+.product-line .check-title{display:flex!important;flex-direction:row!important;align-items:flex-start!important;gap:7px!important;min-width:0!important;width:100%!important}
+.product-line .check-title input[type=checkbox]{flex:0 0 20px!important;width:20px!important;height:20px!important;margin:1px 0 0!important}
+.product-line .check-title .grow{flex:1 1 auto!important;min-width:0!important}
+.product-line .check-title .grow b{display:block!important;margin:0!important;line-height:1.25!important;font-size:15px!important;overflow-wrap:anywhere!important}
+.product-line .check-title .muted{display:block!important;margin:2px 0 0!important;line-height:1.25!important}
+.product-line .product-total{grid-column:2!important;grid-row:1!important;display:block!important;align-self:center!important;justify-self:end!important;margin:0!important;padding:0!important;text-align:right!important;white-space:nowrap!important;min-width:max-content!important;font-size:15px!important;font-weight:800!important;color:var(--accent)!important}
+.product-line .product-total .line-total{display:inline!important;white-space:nowrap!important;font:inherit!important;color:inherit!important}
+.product-line .fields-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;width:100%!important;margin:0!important;max-width:none!important}
+.product-line .fields-row .price-field{display:flex!important;flex-direction:column!important;gap:3px!important;min-width:0!important;margin:0!important}
+.product-line .fields-row .price-field small{font-size:10px!important;line-height:1.2!important;white-space:normal!important}
+.product-line .fields-row input{width:100%!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;height:42px!important;min-height:42px!important;padding:6px 5px!important;font-size:13px!important}
+.product-line .delete-item{display:block!important;width:auto!important;min-width:0!important;height:30px!important;min-height:30px!important;margin:7px 0 0 auto!important;padding:3px 9px!important}
+@media(max-width:360px){.product-line .product-top{column-gap:5px!important}.product-line .check-title .grow b{font-size:14px!important}.product-line .product-total{font-size:13px!important}.product-line .fields-row{gap:4px!important}.product-line .fields-row input{padding:5px 3px!important;font-size:12px!important}}
 </style>
 </head>
 <body>
