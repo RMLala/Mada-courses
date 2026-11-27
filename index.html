@@ -238,6 +238,23 @@ input,select,textarea{background:var(--bg)!important;color:var(--text)!important
 .product-line .fields-row input{width:100%!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;height:42px!important;min-height:42px!important;padding:6px 5px!important;font-size:13px!important}
 .product-line .delete-item{display:block!important;width:auto!important;min-width:0!important;height:30px!important;min-height:30px!important;margin:7px 0 0 auto!important;padding:3px 9px!important}
 @media(max-width:360px){.product-line .product-top{column-gap:5px!important}.product-line .check-title .grow b{font-size:14px!important}.product-line .product-total{font-size:13px!important}.product-line .fields-row{gap:4px!important}.product-line .fields-row input{padding:5px 3px!important;font-size:12px!important}}
+
+/* Mada Courses product card — independent structural layout (no legacy selector conflicts) */
+.mc-product-card{display:block!important;width:100%!important;box-sizing:border-box!important;padding:12px!important;margin:10px 0!important;border:1px solid var(--line)!important;border-radius:16px!important;background:var(--card)!important;overflow:hidden!important}
+.mc-product-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;width:100%!important;margin:0 0 12px!important;box-sizing:border-box!important}
+.mc-product-title{display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;align-items:center!important;gap:8px!important;min-width:0!important}
+.mc-product-title input[type=checkbox]{width:22px!important;height:22px!important;margin:0!important;flex:0 0 22px!important}
+.mc-product-text{min-width:0!important;display:block!important;text-align:left!important}
+.mc-product-text b{display:block!important;margin:0!important;padding:0!important;font-size:16px!important;line-height:1.25!important;font-weight:750!important;overflow-wrap:anywhere!important;text-align:left!important}
+.mc-product-text span{display:block!important;margin-top:3px!important;font-size:12px!important;line-height:1.2!important;color:var(--muted)!important;text-align:left!important}
+.mc-product-amount{display:block!important;justify-self:end!important;align-self:center!important;min-width:max-content!important;text-align:right!important;white-space:nowrap!important;font-size:15px!important;line-height:1.2!important;font-weight:800!important;color:var(--accent)!important}
+.mc-product-amount .line-total{display:inline!important;font-size:inherit!important;line-height:inherit!important;color:inherit!important;white-space:nowrap!important}
+.mc-product-fields .mc-fields-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;width:100%!important;margin:0!important;padding:0!important;box-sizing:border-box!important}
+.mc-product-fields .mc-fields-row .price-field{display:flex!important;flex-direction:column!important;gap:4px!important;min-width:0!important;width:100%!important;margin:0!important}
+.mc-product-fields .mc-fields-row .price-field small{display:block!important;font-size:10px!important;line-height:1.2!important;color:var(--muted)!important;white-space:normal!important;min-height:12px!important}
+.mc-product-fields .mc-fields-row input{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;height:44px!important;min-height:44px!important;box-sizing:border-box!important;padding:7px 6px!important;font-size:14px!important;margin:0!important}
+.mc-product-delete{display:inline-flex!important;width:auto!important;min-width:0!important;min-height:34px!important;height:auto!important;margin:9px 0 0 auto!important;padding:5px 10px!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
+@media(max-width:380px){.mc-product-card{padding:9px!important}.mc-product-head{gap:6px!important}.mc-product-text b{font-size:14px!important}.mc-product-amount{font-size:13px!important}.mc-product-fields .mc-fields-row{gap:4px!important}.mc-product-fields .mc-fields-row input{padding:5px 3px!important;font-size:12px!important}}
 </style>
 </head>
 <body>
@@ -317,7 +334,7 @@ function itemRow(i,kind,owner){
  const check=kind==='course'?`<input type="checkbox" ${i.bought?'checked':''} data-set="item" data-f="bought" ${dd}>`:'';
  const total=kind==='course'?`<span class="line-total" data-line-total="${i.id}">${money(i.bought&&i.price!=null?i.qty*i.price:0)}</span>`:'';
  const fields=`<div class="fields-row"><label class="price-field"><small>Qté · ${esc(i.unit)}</small><input class="q" type="number" min="0" step="any" value="${i.qty}" data-set="item" data-f="qty" ${dd}></label><label class="price-field"><small>PU estimé</small><input class="p" type="number" min="0" step="any" value="${i.est}" data-set="item" data-f="est" ${dd}></label>${kind==='course'? `<label class="price-field"><small>PU payé</small><input class="p" type="number" min="0" step="any" value="${i.price??''}" placeholder="—" data-set="item" data-f="price" ${dd}></label>`:''}</div>`;
- return `<div class="product-line"><div class="product-top"><div class="check-title">${check}<div class="grow"><b>${esc(i.name)}</b><div class="muted">${esc(i.cat)} · ${esc(i.unit)}</div></div></div><div class="product-total">${total||''}</div></div>${fields}<button class="sm dng delete-item" aria-label="Supprimer ${esc(i.name)}" data-act="delItem" ${dd}>✕ Supprimer</button></div>`;
+ return `<div class="mc-product-card"><div class="mc-product-head"><div class="mc-product-title">${check}<div class="mc-product-text"><b>${esc(i.name)}</b><span>${esc(i.cat)} · ${esc(i.unit)}</span></div></div><div class="mc-product-amount">${total||''}</div></div><div class="mc-product-fields">${fields.replace('class="fields-row"','class="mc-fields-row"')}</div><button class="sm dng delete-item mc-product-delete" aria-label="Supprimer ${esc(i.name)}" data-act="delItem" ${dd}>✕ Supprimer</button></div>`;
 }
 function addForm(kind,id){
  const opts=(db.products||[]).map(p=>`<option value="${esc(p.name)}"></option>`).join('');
