@@ -344,32 +344,60 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
+        @JavascriptInterface
+        public int biometricAvailability() {
+            try {
+                return androidx.biometric.BiometricManager.from(MainActivity.this)
+                    .canAuthenticate(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK);
+            } catch (Exception e) {
+                return androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE;
+            }
+        }
+
+        @JavascriptInterface
         public void authenticateBiometric() {
             runOnUiThread(() -> {
+                final int availability = androidx.biometric.BiometricManager.from(MainActivity.this)
+                    .canAuthenticate(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK);
+                if (availability != androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS) {
+                    String reason = availability == androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE
+                        ? "Aucun capteur biométrique compatible."
+                        : availability == androidx.biometric.BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE
+                        ? "Capteur biométrique momentanément indisponible."
+                        : availability == androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
+                        ? "Aucune empreinte/biométrie n’est enregistrée dans Android."
+                        : "Biométrie non disponible (code " + availability + ").";
+                    web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false," + JSONObject.quote(reason) + ")", null);
+                    Toast.makeText(MainActivity.this, reason, Toast.LENGTH_LONG).show();
+                    return;
+                }
                 try {
                     Executor executor = ContextCompat.getMainExecutor(MainActivity.this);
                     BiometricPrompt prompt = new BiometricPrompt(MainActivity.this, executor,
                         new BiometricPrompt.AuthenticationCallback() {
                             @Override public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
-                                web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(true)", null);
+                                web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(true,'Biométrie validée.')", null);
                             }
                             @Override public void onAuthenticationError(int code, CharSequence message) {
-                                web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false)", null);
-                                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                                String msg = message == null ? "Authentification annulée ou indisponible." : message.toString();
+                                web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false," + JSONObject.quote(msg) + ")", null);
+                                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                             }
                             @Override public void onAuthenticationFailed() {
-                                web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false)", null);
+                                // Non-terminal mismatch: keep native prompt open for another attempt.
                             }
                         });
                     BiometricPrompt.PromptInfo info = new BiometricPrompt.PromptInfo.Builder()
                         .setTitle("Déverrouiller Mada Courses")
                         .setSubtitle("Confirme ton identité")
                         .setNegativeButtonText("Annuler")
+                        .setAllowedAuthenticators(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK)
                         .build();
                     prompt.authenticate(info);
                 } catch (Exception error) {
-                    web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false)", null);
-                    Toast.makeText(MainActivity.this, "Biométrie indisponible sur cet appareil", Toast.LENGTH_LONG).show();
+                    String msg = "Erreur biométrie : " + (error.getMessage() == null ? error.getClass().getSimpleName() : error.getMessage());
+                    web.evaluateJavascript("window.onBiometricResult&&window.onBiometricResult(false," + JSONObject.quote(msg) + ")", null);
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
             });
         }
